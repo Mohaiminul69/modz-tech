@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Orbitron', 'Inter', system-ui, sans-serif;
+  --font-label: 'Rajdhani', 'Inter', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Base surfaces */
+  --color-ink: #050608;
+  --color-ink-soft: #0b0e15;
+  --color-ink-elevated: #11151f;
+  --color-paper: #050608;
+  --color-line: rgba(255, 255, 255, 0.08);
+
+  /* Chrome / silver text */
+  --color-chrome-100: #f5f7fa;
+  --color-chrome-300: #cfd4db;
+  --color-chrome-500: #9aa1ab;
+  --color-chrome-700: #5b616b;
+
+  /* Electric blue accent */
+  --color-brand-50: #0a1220;
+  --color-brand-100: #0f1b30;
+  --color-brand-200: #16294a;
+  --color-brand-300: #2a5bb0;
+  --color-brand-400: #4fb3ff;
+  --color-brand-500: #2f8eff;
+  --color-brand-600: #1f6feb;
+  --color-brand-700: #1550b3;
+  --color-brand-800: #0f3d8a;
+  --color-brand-900: #0a2452;
+
+  /* Cyberpunk accent flares — used sparingly against the blue/chrome base */
+  --color-neon-yellow: #f5d90a;
+  --color-neon-red: #ff2e4d;
+  --color-neon-green: #39ff88;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-chrome-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: white;
+}
+
+/* Metallic chrome text, like the Modz Tech wordmark */
+.text-chrome {
+  background: linear-gradient(180deg, #ffffff 10%, #d7dce2 45%, #8a919c 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Neon glow accents */
+.glow-text-blue {
+  filter: drop-shadow(0 0 10px rgba(47, 142, 255, 0.55));
+}
+
+.glow-border {
+  box-shadow:
+    0 0 0 1px rgba(79, 179, 255, 0.35),
+    0 0 30px rgba(47, 142, 255, 0.15);
+}
+
+.glow-border-hover {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.glow-border-hover:hover {
+  box-shadow:
+    0 0 0 1px rgba(79, 179, 255, 0.5),
+    0 0 40px rgba(47, 142, 255, 0.25);
+}
+
+.glow-text-yellow {
+  filter: drop-shadow(0 0 10px rgba(245, 217, 10, 0.55));
+}
+
+.glow-text-red {
+  filter: drop-shadow(0 0 10px rgba(255, 46, 77, 0.55));
+}
+
+.glow-text-green {
+  filter: drop-shadow(0 0 10px rgba(57, 255, 136, 0.55));
+}
+
+/* Diagonal light streak, used to echo the hero banner's beam lines */
+.beam-line {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(79, 179, 255, 0.7),
+    transparent
+  );
+  filter: blur(0.5px);
+  transform: rotate(14deg);
+}
+
+.beam-line-yellow {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(245, 217, 10, 0.6),
+    transparent
+  );
+}
+
+.beam-line-red {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 46, 77, 0.6),
+    transparent
+  );
+}
+
+.beam-line-green {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(57, 255, 136, 0.55),
+    transparent
+  );
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(79, 179, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 179, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}

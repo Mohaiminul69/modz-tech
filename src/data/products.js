@@ -1,0 +1,68 @@
+// "Our Products" grid on the homepage.
+// image: null shows a styled placeholder — set to an imported image path once real product photos are ready.
+export const products = [
+  {
+    id: 'wireless-earbuds',
+    name: 'Wireless Earbuds Pro',
+    price: 29,
+    oldPrice: 39,
+    image: null,
+    icon: 'earbuds',
+  },
+  {
+    id: 'fast-charger',
+    name: '65W USB-C Fast Charger',
+    price: 19,
+    oldPrice: null,
+    image: null,
+    icon: 'charger',
+  },
+  {
+    id: 'power-bank',
+    name: '20000mAh Power Bank',
+    price: 34,
+    oldPrice: 42,
+    image: null,
+    icon: 'battery',
+  },
+  {
+    id: 'smartwatch',
+    name: 'Modz Smartwatch S1',
+    price: 59,
+    oldPrice: 75,
+    image: null,
+    icon: 'watch',
+  },
+  {
+    id: 'mechanical-keyboard',
+    name: 'RGB Mechanical Keyboard',
+    price: 45,
+    oldPrice: null,
+    image: null,
+    icon: 'keyboard',
+  },
+  {
+    id: 'bluetooth-speaker',
+    name: 'Portable Bluetooth Speaker',
+    price: 25,
+    oldPrice: 32,
+    image: null,
+    icon: 'speaker',
+  },
+  {
+    id: 'laptop-stand',
+    name: 'Aluminum Laptop Stand',
+    price: 22,
+    oldPrice: null,
+    image: null,
+    icon: 'laptop',
+  },
+  {
+    id: 'usb-hub',
+    name: '7-in-1 USB-C Hub',
+    price: 27,
+    oldPrice: 33,
+    image: null,
+    icon: 'hub',
+  },
+]
