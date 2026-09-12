@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 Online shop homepage mockup
+Online shop homepage mockup v2
 dist
 dist-ssr
 *.local

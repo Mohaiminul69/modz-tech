@@ -1,4 +1,5 @@
 import Hero from '../components/sections/Hero'
+import Offers from '../components/sections/Offers'
 import Bundles from '../components/sections/Bundles'
 import Identity from '../components/sections/Identity'
 import Products from '../components/sections/Products'
@@ -9,6 +10,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Offers />
       <Bundles />
       <Identity />
       <Products />
