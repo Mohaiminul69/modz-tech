@@ -1,103 +1,117 @@
-import { Link } from 'react-router-dom'
-import {
-  PiArrowRight,
-  PiSealCheck,
-  PiShieldCheck,
-  PiCpu,
-  PiHeadphones,
-} from 'react-icons/pi'
+import { Link } from "react-router-dom";
+import { PiArrowRight } from "react-icons/pi";
+import heroProduct from "../../assets/products/hero_section_product.jpg";
 
-const features = [
-  { icon: PiSealCheck, label: 'Premium Quality', accent: 'blue' },
-  { icon: PiShieldCheck, label: 'Reliable Performance', accent: 'red' },
-  { icon: PiCpu, label: 'Modern Technology', accent: 'yellow' },
-  { icon: PiHeadphones, label: 'Built For Your Lifestyle', accent: 'green' },
-]
-
-const accentClasses = {
-  blue: { ring: 'border-brand-500/40', text: 'text-brand-400' },
-  yellow: { ring: 'border-neon-yellow/40', text: 'text-neon-yellow' },
-  red: { ring: 'border-neon-red/40', text: 'text-neon-red' },
-  green: { ring: 'border-neon-green/40', text: 'text-neon-green' },
-}
-
-const categories = ['Earphones', 'Headphones', 'Chargers', 'Adapters', 'And More']
+// const trustStats = [
+//   { value: '4.9/5', caption: '12,400 REVIEWS' },
+//   { value: '2 yr', caption: 'WARRANTY INCLUDED' },
+//   { value: '48 hr', caption: 'TRACKED DELIVERY' },
+// ]
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-ink">
-      <div className="bg-grid absolute inset-0 opacity-60" />
+    <section className="relative overflow-hidden bg-bg md:flex md:min-h-[calc(100vh-4rem)] md:items-center">
       <div
-        className="absolute inset-0"
+        className="pointer-events-none absolute left-1/2 top-[-180px] h-[520px] w-[900px] -translate-x-1/2"
         style={{
           background:
-            'radial-gradient(circle at 15% 15%, rgba(47,142,255,0.18), transparent 40%), radial-gradient(circle at 85% 10%, rgba(79,179,255,0.15), transparent 45%), radial-gradient(circle at 90% 85%, rgba(245,217,10,0.1), transparent 40%), radial-gradient(circle at 5% 80%, rgba(255,46,77,0.1), transparent 40%), radial-gradient(circle at 50% 100%, rgba(57,255,136,0.08), transparent 35%)',
+            "radial-gradient(ellipse at center, rgba(47,127,212,.22), transparent 68%)",
         }}
       />
-      {/* Beam lines echoing the brand banner */}
-      <span className="beam-line left-[10%] top-0 h-full opacity-40" />
-      <span className="beam-line beam-line-red left-[22%] top-0 h-full opacity-30" />
-      <span className="beam-line beam-line-green left-[36%] top-0 h-full opacity-20" />
-      <span className="beam-line right-[22%] top-0 h-full opacity-30" />
-      <span className="beam-line beam-line-yellow right-[10%] top-0 h-full opacity-30" />
 
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8">
-        <span className="font-label flex items-center gap-2.5 rounded-full border border-line bg-ink-elevated px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand-400">
-          <span className="flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-            <span className="h-1.5 w-1.5 rounded-full bg-neon-red" />
-            <span className="h-1.5 w-1.5 rounded-full bg-neon-yellow" />
-            <span className="h-1.5 w-1.5 rounded-full bg-neon-green" />
+      <div
+        className="relative mx-auto grid w-full max-w-[1680px] items-center gap-[clamp(32px,5vw,72px)] px-[clamp(20px,4vw,64px)] py-[clamp(40px,6vh,96px)]"
+        style={{ gridTemplateColumns: "repeat(auto-fit,minmax(340px,1fr))" }}
+      >
+        {/* Left column */}
+        <div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(106,169,233,.3)] bg-[rgba(47,127,212,.08)] px-3.5 py-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_10px_rgba(47,127,212,.8)]" />
+            <span className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-accent-tint">
+              Autumn Collection · 2026
+            </span>
           </span>
-          New Season, New Gear
-        </span>
 
-        <h1 className="mt-6 max-w-3xl font-display text-3xl font-bold uppercase leading-tight tracking-wide sm:text-4xl lg:text-5xl">
-          <span className="text-chrome">Tech That Connects.</span>
-          <br />
-          <span className="glow-text-blue text-brand-400">Quality That Lasts.</span>
-        </h1>
+          <h1
+            className="mt-6 max-w-xl font-heading text-[clamp(40px,5.4vw,74px)] font-bold leading-[1.02] tracking-[-0.035em]"
+            style={{
+              background: "linear-gradient(180deg,#fff 30%,#a8b4c4 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
+            }}
+          >
+            Technology that
+            <br />
+            fits your lifestyle.
+          </h1>
 
-        <p className="mt-6 max-w-xl text-base text-chrome-500">
-          From work hours to play hours, find the gadget that powers your day.
-        </p>
+          <p className="mt-5 max-w-[480px] font-body text-[16px] leading-relaxed text-snow/62">
+            Audio, power, and everyday-carry pieces we'd use ourselves — tested
+            for weeks before they ship, never restocked with filler.
+          </p>
 
-        <Link
-          to="/shop"
-          className="mt-10 inline-flex items-center gap-2 rounded-full bg-brand-500 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/30 transition-transform hover:scale-105 hover:bg-brand-400"
-        >
-          View All Products
-          <PiArrowRight className="h-4 w-4" />
-        </Link>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              to="/shop"
+              className="bg-brand-gradient inline-flex w-65 items-center justify-center gap-2 rounded-xl px-7 py-3.75 font-body text-[14px] font-bold text-white shadow-[0_10px_30px_rgba(47,127,212,.35)] transition-[filter] hover:brightness-[1.08]"
+            >
+              Shop the collection
+              <PiArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/shop/hoco-eq-34-plus"
+              className="inline-flex w-65 items-center justify-center rounded-xl border border-white/16 px-7 py-3.75 font-body text-[14px] font-bold text-snow transition-colors hover:bg-white/6"
+            >
+              See the new Hoco EQ 34 Plus
+            </Link>
+          </div>
 
-        {/* Feature strip */}
-        <div className="mt-16 grid w-full max-w-4xl grid-cols-2 gap-y-6 border-y border-line py-8 sm:grid-cols-4 sm:gap-x-4">
-          {features.map(({ icon: Icon, label, accent }) => (
-            <div key={label} className="flex flex-col items-center gap-2 px-2 sm:flex-row sm:justify-center">
-              <span
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${accentClasses[accent].ring} ${accentClasses[accent].text}`}
-              >
-                <Icon className="h-4.5 w-4.5" />
-              </span>
-              <span className="font-label text-xs font-semibold uppercase tracking-wider text-chrome-300">
-                {label}
-              </span>
-            </div>
-          ))}
+          {/* <div className="mt-10 grid grid-cols-3 gap-7 border-t border-white/7 pt-7">
+            {trustStats.map((stat) => (
+              <div key={stat.caption}>
+                <div className="font-heading text-[22px] font-semibold text-snow">
+                  {stat.value}
+                </div>
+                <div className="mt-1 font-mono text-[10px] tracking-[0.14em] text-snow/45">
+                  {stat.caption}
+                </div>
+              </div>
+            ))}
+          </div> */}
         </div>
 
-        {/* Category strip */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-          {categories.map((cat, i) => (
-            <span key={cat} className="flex items-center gap-3">
-              <span className="font-label text-xs uppercase tracking-[0.2em] text-chrome-500">
-                {cat}
-              </span>
-              {i < categories.length - 1 && <span className="h-3 w-px bg-line" />}
-            </span>
-          ))}
+        {/* Right column: media well (capped on desktop so it can never push the
+            hero taller than the viewport below the navbar) */}
+        <div
+          className="relative aspect-square w-full overflow-hidden rounded-3xl border border-white/9 md:aspect-auto md:ml-auto md:h-[min(64vh,620px)] md:w-[min(64vh,620px)]"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 35%, rgba(47,127,212,.18), rgba(255,255,255,.02) 60%), #0b0e13",
+          }}
+        >
+          <img
+            src={heroProduct}
+            alt="Hoco EQ 34 Plus — ANC+ENC TWS earbuds with charging case"
+            className="h-full w-full object-cover"
+          />
+
+          <div className="absolute bottom-[22px] left-[22px] flex items-center gap-3 rounded-2xl border border-white/10 bg-[rgba(9,11,15,.78)] px-4 py-3 backdrop-blur-[14px]">
+            <div>
+              <div className="font-mono text-[9.5px] font-medium uppercase tracking-[0.16em] text-accent-tint">
+                New
+              </div>
+              <div className="font-heading text-[15px] font-semibold text-snow">
+                Hoco EQ 34 Plus
+              </div>
+            </div>
+            <span className="h-8 w-px bg-white/12" />
+            <div className="font-heading text-[15px] font-semibold text-accent">
+              ৳729
+            </div>
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

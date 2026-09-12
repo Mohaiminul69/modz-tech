@@ -3,7 +3,7 @@ import { PiCube } from 'react-icons/pi'
 export default function Identity() {
   return (
     <section className="border-y border-line bg-ink-soft">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
+      <div className="mx-auto grid max-w-[1680px] grid-cols-1 items-center gap-12 px-[clamp(20px,4vw,64px)] py-20 lg:grid-cols-2">
         <div className="glow-border relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-ink-elevated">
           <div className="bg-grid absolute inset-0 opacity-50" />
           <PiCube className="glow-text-blue relative h-24 w-24 text-brand-400" strokeWidth={1} />

@@ -6,7 +6,7 @@ const accentColors = ['text-brand-400', 'text-neon-red', 'text-neon-yellow', 'te
 export default function Testimonials() {
   return (
     <section className="border-y border-line bg-ink-soft py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1680px] px-[clamp(20px,4vw,64px)]">
         <div className="text-center">
           <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-chrome sm:text-3xl">
             What Customers Say

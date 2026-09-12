@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+Online shop homepage mockup
 dist
 dist-ssr
 *.local

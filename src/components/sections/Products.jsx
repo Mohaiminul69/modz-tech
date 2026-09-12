@@ -5,7 +5,7 @@ import ProductImage from '../ProductImage'
 
 export default function Products() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-[1680px] px-[clamp(20px,4vw,64px)] py-20">
       <div className="text-center">
         <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-chrome sm:text-3xl">
           Our Products
