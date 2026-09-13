@@ -9,6 +9,7 @@ export const siteConfig = {
   currency: '$',
   social: {
     facebook: '#',
+    messenger: '#',
     instagram: '#',
   },
   // Route-based nav. Pages other than Home aren't built yet, so they fall

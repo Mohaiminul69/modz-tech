@@ -1,70 +1,63 @@
 import { Link } from 'react-router-dom'
-import { PiFacebookLogo, PiInstagramLogo } from 'react-icons/pi'
 import Logo from './Logo'
-import { siteConfig } from '../data/siteConfig'
 
 const columns = [
   {
     title: 'Shop',
     links: [
-      { label: 'All Products', to: '/shop' },
-      { label: 'Bundles', to: '/bundles' },
-      { label: 'New Arrivals', to: '/shop' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About Us', to: '/about' },
-      { label: 'Contact', to: '/contact' },
+      { label: 'Audio', to: '/shop' },
+      { label: 'Power & Charging', to: '/shop' },
+      { label: 'Wearables', to: '/shop' },
+      { label: 'Desk & Mobile', to: '/shop' },
     ],
   },
   {
     title: 'Support',
     links: [
-      { label: 'FAQs', to: '/contact' },
-      { label: 'Shipping & Returns', to: '/contact' },
+      { label: 'Track an order', to: '/track-order' },
+      { label: 'Running offers', to: '/offers' },
+      { label: 'Packages', to: '/packages' },
+      { label: 'Contact us', to: '/contact' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'Why Modz', to: '/about' },
+      { label: 'Store location', to: '/store-location' },
+      { label: 'Privacy', to: '/privacy' },
+      { label: 'Terms', to: '/terms' },
     ],
   },
 ]
 
-export default function Footer() {
+const Footer = () => {
   return (
-    <footer className="border-t border-line bg-ink-soft">
-      <div className="mx-auto max-w-[1680px] px-[clamp(20px,4vw,64px)] py-14">
-        <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
-          <div className="col-span-2">
+    <footer className="border-t border-white/7">
+      <div className="mx-auto max-w-[1680px] px-[clamp(20px,4vw,64px)] pb-10 pt-[clamp(48px,6vw,80px)]">
+        <div
+          className="grid gap-9"
+          style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))' }}
+        >
+          <div>
             <Logo />
-            <p className="mt-4 max-w-xs text-sm text-chrome-500">
-              {siteConfig.tagline}. Quality gadgets and accessories, picked for real life.
+            <p className="mt-4 max-w-xs font-body text-[12.5px] leading-relaxed text-snow/45">
+              Premium consumer tech, delivered nationwide. Cash on delivery.
             </p>
-            <div className="mt-5 flex items-center gap-3">
-              <a
-                href={siteConfig.social.facebook}
-                aria-label="Facebook"
-                className="glow-border-hover flex h-9 w-9 items-center justify-center rounded-full border border-line bg-ink-elevated text-chrome-300 transition-colors hover:text-brand-400"
-              >
-                <PiFacebookLogo className="h-4.5 w-4.5" />
-              </a>
-              <a
-                href={siteConfig.social.instagram}
-                aria-label="Instagram"
-                className="glow-border-hover flex h-9 w-9 items-center justify-center rounded-full border border-line bg-ink-elevated text-chrome-300 transition-colors hover:text-neon-red"
-              >
-                <PiInstagramLogo className="h-4.5 w-4.5" />
-              </a>
-            </div>
           </div>
 
           {columns.map((col) => (
             <div key={col.title}>
-              <h3 className="font-label text-sm font-semibold uppercase tracking-wider text-chrome-100">
+              <h3 className="font-mono text-[9.5px] font-medium uppercase tracking-[0.16em] text-snow/40">
                 {col.title}
               </h3>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-4 grid gap-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <Link to={link.to} className="text-sm text-chrome-500 hover:text-brand-400">
+                    <Link
+                      to={link.to}
+                      className="font-body text-[13px] text-snow/70 transition-colors hover:text-white"
+                    >
                       {link.label}
                     </Link>
                   </li>
@@ -74,10 +67,13 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-line pt-6 text-sm text-chrome-700">
-          © {new Date().getFullYear()}, {siteConfig.name}. All Rights Reserved.
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-2 border-t border-white/7 pt-6 font-body text-[11.5px] text-snow/35">
+          <span>© {new Date().getFullYear()} Modz Tech. All rights reserved.</span>
+          <span>Cash on delivery · 24–48 hr nationwide delivery</span>
         </div>
       </div>
     </footer>
   )
 }
+
+export default Footer

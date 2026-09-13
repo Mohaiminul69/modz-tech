@@ -1,65 +1,103 @@
 import { Link } from 'react-router-dom'
+import { PiArrowRight, PiHeadphones, PiBatteryChargingVertical, PiWatch, PiUsb, PiCube } from 'react-icons/pi'
 import { products } from '../../data/products'
-import { siteConfig } from '../../data/siteConfig'
-import ProductImage from '../ProductImage'
 
-export default function Products() {
+const ICONS = {
+  earbuds: PiHeadphones,
+  battery: PiBatteryChargingVertical,
+  watch: PiWatch,
+  hub: PiUsb,
+}
+
+const ProductCard = ({ product }) => {
+  const Icon = ICONS[product.icon] || PiCube
+
   return (
-    <section className="mx-auto max-w-[1680px] px-[clamp(20px,4vw,64px)] py-20">
-      <div className="text-center">
-        <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-chrome sm:text-3xl">
-          Our Products
-        </h2>
-        <p className="mt-3 text-chrome-500">Handpicked gadgets, ready to ship today.</p>
-      </div>
-
-      <div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-        {products.map((product) => (
-          <div key={product.id} className="group flex flex-col">
-            <div className="glow-border-hover relative aspect-square overflow-hidden rounded-2xl border border-line bg-ink-soft">
-              {product.oldPrice && (
-                <span className="font-label absolute left-2 top-2 z-10 rounded-full bg-linear-to-r from-neon-red to-neon-yellow px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-ink">
-                  Sale
-                </span>
-              )}
-              <ProductImage
-                src={product.image}
-                alt={product.name}
-                icon={product.icon}
-                className="transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-            <h3 className="mt-4 text-sm font-medium text-chrome-100">{product.name}</h3>
-            <div className="mt-1 flex items-center gap-2">
-              <span className="font-display font-semibold text-brand-400">
-                {siteConfig.currency}
-                {product.price}
-              </span>
-              {product.oldPrice && (
-                <span className="text-sm text-chrome-700 line-through">
-                  {siteConfig.currency}
-                  {product.oldPrice}
-                </span>
-              )}
-            </div>
-            <button
-              type="button"
-              className="mt-3 rounded-full border border-line py-2 text-sm font-medium text-chrome-300 transition-colors hover:border-brand-500 hover:bg-brand-500 hover:text-white"
-            >
-              Select Options
-            </button>
+    <Link
+      to={product.slug}
+      className="group flex flex-col overflow-hidden rounded-[18px] border border-white/8 transition-colors hover:border-[rgba(106,169,233,.45)]"
+      style={{
+        backgroundImage:
+          'linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015))',
+      }}
+    >
+      <div className="relative aspect-[4/3] overflow-hidden border-b border-white/7 bg-surface-media">
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center" role="img" aria-label={product.name}>
+            <Icon className="h-10 w-10 text-accent-tint/60" strokeWidth={1.5} />
           </div>
-        ))}
+        )}
+
+        <span className="absolute left-3 top-3 rounded-full border border-white/12 bg-[rgba(7,9,13,.75)] px-2.5 py-1 font-mono text-[9.5px] font-medium uppercase tracking-[0.1em] text-[#a9c9ee]">
+          {product.badge}
+        </span>
       </div>
 
-      <div className="mt-12 text-center">
+      <div className="flex flex-1 flex-col gap-2 p-[18px]">
+        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-snow/40">
+          {product.category}
+        </span>
+        <h3 className="font-heading text-[16.5px] font-semibold text-snow">{product.name}</h3>
+        <p className="font-body text-[12.5px] leading-relaxed text-snow/50">{product.note}</p>
+
+        <div className="mt-auto flex items-center justify-between pt-3">
+          <span className="font-heading text-[16px] font-semibold text-snow">
+            ৳{product.price.toLocaleString()}
+          </span>
+          <button
+            type="button"
+            className="rounded-full border border-[rgba(106,169,233,.4)] bg-[rgba(47,127,212,.14)] px-4 py-1.5 font-body text-[12.5px] font-semibold text-[#cfe3f8] transition-colors hover:bg-[rgba(47,127,212,.3)] hover:text-white"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+const Products = () => {
+  return (
+    <section
+      id="featured"
+      className="mx-auto max-w-[1680px] px-[clamp(20px,4vw,64px)] py-[clamp(56px,6vw,96px)]"
+    >
+      <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <span className="font-mono text-[10.5px] font-medium uppercase tracking-[0.2em] text-accent-tint">
+            02 — Featured products
+          </span>
+          <h2 className="mt-3 max-w-2xl font-heading text-[clamp(26px,3vw,40px)] font-bold leading-[1.1] tracking-[-0.028em] text-snow">
+            The pieces people keep coming back for.
+          </h2>
+        </div>
+
         <Link
           to="/shop"
-          className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+          className="inline-flex items-center gap-2 border-b border-white/20 pb-1 font-body text-[13px] font-semibold text-snow/70 transition-colors hover:text-snow"
         >
-          View All Products
+          View all products
+          <PiArrowRight className="h-3.5 w-3.5" />
         </Link>
+      </div>
+
+      <div
+        className="grid gap-[18px]"
+        style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))' }}
+      >
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
       </div>
     </section>
   )
 }
+
+export default Products
