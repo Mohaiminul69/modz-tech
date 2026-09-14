@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import heroProduct from '../../assets/products/hero_section_product.jpg'
+import { useCart } from '../../context/CartContext'
 
 const specs = [
   { value: 'ANC+ENC', label: 'Noise control' },
@@ -8,6 +8,8 @@ const specs = [
 ]
 
 const ProductSpotlight = () => {
+  const { addItem } = useCart()
+
   return (
     <section
       id="spotlight"
@@ -68,12 +70,13 @@ const ProductSpotlight = () => {
               <span className="font-body text-[13px] text-snow/40 line-through">৳990</span>
             </div>
 
-            <Link
-              to="/shop/hoco-eq-34-plus"
+            <button
+              type="button"
+              onClick={() => addItem('hoco-eq-34-plus', 1)}
               className="bg-brand-gradient inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 font-body text-[14px] font-bold text-white shadow-[0_10px_28px_rgba(47,127,212,.3)] transition-[filter] hover:brightness-[1.08]"
             >
               Add to cart
-            </Link>
+            </button>
           </div>
         </div>
       </div>

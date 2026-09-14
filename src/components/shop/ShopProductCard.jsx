@@ -11,6 +11,7 @@ import {
   PiCube,
 } from 'react-icons/pi'
 import { siteConfig } from '../../data/siteConfig'
+import { useCart } from '../../context/CartContext'
 
 const ICONS = {
   earbuds: PiHeadphones,
@@ -27,6 +28,7 @@ const whatsappOrderLink = (name) =>
   `${siteConfig.whatsappLink}?text=${encodeURIComponent(`Hi, I'd like to order: ${name}`)}`
 
 const ShopProductCard = ({ product }) => {
+  const { addItem } = useCart()
   const Icon = ICONS[product.icon] || PiCube
   const hasDiscount = product.oldPrice > product.price
   const badgeLabel = product.tag || (product.inStock ? 'In stock' : 'Pre-order')
@@ -91,6 +93,7 @@ const ShopProductCard = ({ product }) => {
         <div className="grid grid-cols-[1fr_auto] gap-2 pt-3">
           <button
             type="button"
+            onClick={() => addItem(product.id, 1)}
             className="rounded-full border border-[rgba(106,169,233,.4)] bg-[rgba(47,127,212,.14)] px-3.5 py-2.5 font-body text-[12.5px] font-semibold text-[#cfe3f8] transition-colors hover:bg-[rgba(47,127,212,.3)] hover:text-white"
           >
             Add to cart

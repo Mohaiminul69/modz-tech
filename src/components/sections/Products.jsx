@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PiArrowRight, PiHeadphones, PiBatteryChargingVertical, PiWatch, PiUsb, PiCube } from 'react-icons/pi'
 import { products } from '../../data/products'
+import { useCart } from '../../context/CartContext'
 
 const ICONS = {
   earbuds: PiHeadphones,
@@ -10,6 +11,7 @@ const ICONS = {
 }
 
 const ProductCard = ({ product }) => {
+  const { addItem } = useCart()
   const Icon = ICONS[product.icon] || PiCube
 
   return (
@@ -53,6 +55,10 @@ const ProductCard = ({ product }) => {
           </span>
           <button
             type="button"
+            onClick={(e) => {
+              e.preventDefault()
+              addItem(product.id, 1)
+            }}
             className="rounded-full border border-[rgba(106,169,233,.4)] bg-[rgba(47,127,212,.14)] px-4 py-1.5 font-body text-[12.5px] font-semibold text-[#cfe3f8] transition-colors hover:bg-[rgba(47,127,212,.3)] hover:text-white"
           >
             Add

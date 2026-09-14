@@ -10,10 +10,21 @@ import pikachuCase from '../assets/products/pikachu.png'
 import polaroidCase from '../assets/products/polaroid.png'
 import radioCase from '../assets/products/radio.png'
 
-// Full shop catalogue — 16 placeholder products across 5 categories so the
+// Full shop catalogue — placeholder products across 5 categories so the
 // sidebar filters, sort, and pagination have something to bite on. Replace
 // wholesale with the real catalogue; image: null shows an icon placeholder
 // until real photography exists for that item.
+//
+// `details` is optional, richer product-page content (description
+// paragraphs, quick spec strip, full spec table, colour options, gallery,
+// bundles, related product ids). Only fleshed out for the two products
+// featured in the design handoff (Hoco EQ34 Plus, Airpods Pro 3) — every
+// other product falls back to generic details derived from the fields
+// above, per the handoff's own "fall back to same-category items" guidance.
+
+// Single site-wide offer window, matching the homepage offers strip.
+export const offerEndsAt = new Date('2026-09-30T23:59:00')
+
 export const shopProducts = [
   {
     id: 'hoco-eq-34-plus',
@@ -27,6 +38,32 @@ export const shopProducts = [
     inStock: true,
     image: heroProduct,
     icon: 'earbuds',
+    details: {
+      description: [
+        "Active noise cancellation that actually cancels, a case that lasts the week, and touch controls that don't fire by accident — the earbuds we reach for ourselves.",
+        'Four silicone tip sizes are in the box, and the case tops the buds up several times over before it needs a charge itself.',
+      ],
+      quickSpecs: [
+        { value: 'ANC+ENC', label: 'Noise control' },
+        { value: 'BT 5.3', label: 'Connection' },
+        { value: 'Touch', label: 'Controls' },
+      ],
+      specs: [
+        { k: 'NOISE CONTROL', v: 'Active ANC + ENC calls' },
+        { k: 'PLAYBACK', v: '7 hr buds · 32 hr with case' },
+        { k: 'CHARGING', v: 'USB-C' },
+        { k: 'CONNECTION', v: 'Bluetooth 5.3' },
+        { k: 'CONTROLS', v: 'Touch, per-ear' },
+        { k: 'IN THE BOX', v: 'Buds, case, 3 tip sizes, cable' },
+        { k: 'WEIGHT', v: '4.8 g per bud · 44 g case' },
+      ],
+      gallery: [
+        { label: 'FRONT', image: heroProduct },
+        { label: 'CASE', image: heroProduct },
+        { label: 'BUDS', image: heroProduct },
+        { label: 'IN BOX', image: heroProduct },
+      ],
+    },
   },
   {
     id: 'pro_2',
@@ -53,6 +90,70 @@ export const shopProducts = [
     inStock: true,
     image: airpodsPro3,
     icon: 'earbuds',
+    details: {
+      description: [
+        "Active noise cancellation that actually cancels, a USB-C case that lasts the week, and a fit that stays put on a rickshaw ride. Sealed retail box, checked before it leaves us.",
+        'Four silicone tip sizes are in the box. Sweat and splash resistant to IPX4, so a wet commute is not a problem.',
+      ],
+      quickSpecs: [
+        { value: 'ANC', label: 'Noise control' },
+        { value: '30 hr', label: 'With case' },
+        { value: 'USB-C', label: 'Charging' },
+      ],
+      specs: [
+        { k: 'NOISE CONTROL', v: 'Active ANC + transparency' },
+        { k: 'PLAYBACK', v: '6 hr buds · 30 hr with case' },
+        { k: 'CHARGING', v: 'USB-C · wireless Qi' },
+        { k: 'CONNECTION', v: 'Bluetooth 5.3, multipoint' },
+        { k: 'WATER RESISTANCE', v: 'IPX4 buds and case' },
+        { k: 'IN THE BOX', v: 'Buds, case, 4 tip sizes, cable' },
+        { k: 'WEIGHT', v: '5.3 g per bud · 51 g case' },
+      ],
+      colours: [
+        { name: 'White', swatch: '#e8ebef' },
+        { name: 'Midnight', swatch: '#1b1f26' },
+      ],
+      gallery: [
+        { label: 'FRONT', image: airpodsPro3 },
+        { label: 'SIDE', image: airpodsPro3 },
+        { label: 'BUDS', image: airpodsPro3 },
+        { label: 'IN BOX', image: airpodsPro3 },
+      ],
+      bundles: [
+        {
+          kicker: 'Most added',
+          highlighted: true,
+          parts: [
+            { name: 'Airpods Pro 3', image: airpodsPro3 },
+            { name: 'Silicone Case Cover', image: null },
+          ],
+          partIds: ['pro_3', 'silicone-case-cover'],
+          save: 100,
+        },
+        {
+          kicker: 'Protect it',
+          highlighted: false,
+          parts: [
+            { name: 'Airpods Pro 3', image: airpodsPro3 },
+            { name: 'Clear Armour Case', image: null },
+          ],
+          partIds: ['pro_3', 'clear-armour-case'],
+          save: 130,
+        },
+        {
+          kicker: 'Full kit',
+          highlighted: false,
+          parts: [
+            { name: 'Airpods Pro 3', image: airpodsPro3 },
+            { name: 'Case Cover', image: null },
+            { name: 'Foam Tips', image: null },
+          ],
+          partIds: ['pro_3', 'silicone-case-cover', 'memory-foam-tips'],
+          save: 270,
+        },
+      ],
+      related: ['silicone-case-cover', 'clear-armour-case', 'memory-foam-tips', 'braided-cable-30cm'],
+    },
   },
   {
     id: 'nitento_cover',
@@ -221,6 +322,61 @@ export const shopProducts = [
     tag: 'New',
     inStock: true,
     image: controllerCase,
+    icon: 'hub',
+  },
+  // Accessory items — modeled as real catalogue entries (not just inline
+  // copy on the Airpods Pro 3 detail page) so they're independently
+  // browsable and match the "explicit accessory relation" guidance.
+  {
+    id: 'silicone-case-cover',
+    slug: '/shop/silicone-case-cover',
+    category: 'Accessories',
+    name: 'Silicone Case Cover',
+    note: 'Grippy shell with a carabiner loop.',
+    price: 390,
+    oldPrice: 390,
+    tag: '',
+    inStock: true,
+    image: null,
+    icon: 'case',
+  },
+  {
+    id: 'clear-armour-case',
+    slug: '/shop/clear-armour-case',
+    category: 'Accessories',
+    name: 'Clear Armour Case',
+    note: 'Shock-absorbing clear shell, no yellowing.',
+    price: 450,
+    oldPrice: 450,
+    tag: '',
+    inStock: true,
+    image: null,
+    icon: 'case',
+  },
+  {
+    id: 'memory-foam-tips',
+    slug: '/shop/memory-foam-tips',
+    category: 'Accessories',
+    name: 'Memory Foam Tips (3 pairs)',
+    note: 'Better seal, deeper ANC, less fatigue.',
+    price: 320,
+    oldPrice: 320,
+    tag: '',
+    inStock: true,
+    image: null,
+    icon: 'earbuds',
+  },
+  {
+    id: 'braided-cable-30cm',
+    slug: '/shop/braided-cable-30cm',
+    category: 'Accessories',
+    name: 'Braided USB-C Cable 30cm',
+    note: 'Short cable sized for a case, 60W rated.',
+    price: 260,
+    oldPrice: 260,
+    tag: '',
+    inStock: true,
+    image: null,
     icon: 'hub',
   },
 ]

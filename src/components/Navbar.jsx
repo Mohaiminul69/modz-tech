@@ -1,12 +1,36 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { PiShoppingBagOpen } from "react-icons/pi";
 import Hamburger from "./Hamburger";
 import Logo from "./Logo";
 import NavLinks from "./NavLinks";
 import { siteConfig } from "../data/siteConfig";
+import { useCart } from "../context/CartContext";
 
 const WHATSAPP_ICON = "https://cdn.simpleicons.org/whatsapp/f2f4f7";
+
+const CartLink = () => {
+  const { count } = useCart();
+  const { pathname } = useLocation();
+  const isActive = pathname === "/cart";
+
+  return (
+    <Link
+      to="/cart"
+      className={`relative rounded-full p-2.5 text-snow transition-colors ${
+        isActive
+          ? "border border-[rgba(106,169,233,.5)] bg-[rgba(47,127,212,.16)]"
+          : "glow-border-hover bg-white/5"
+      }`}
+      aria-label="Cart"
+    >
+      <PiShoppingBagOpen className="h-5 w-5" />
+      <span className="absolute -right-1 -top-1 flex h-4.75 w-4.75 items-center justify-center rounded-full bg-accent font-body text-[11px] font-bold text-[#04060a]">
+        {count}
+      </span>
+    </Link>
+  );
+};
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,16 +54,7 @@ const Navbar = () => {
             >
               <img src={WHATSAPP_ICON} alt="" className="h-5 w-5" />
             </a>
-            <Link
-              to="/cart"
-              className="glow-border-hover relative rounded-full bg-white/5 p-2.5 text-snow transition-colors"
-              aria-label="Cart"
-            >
-              <PiShoppingBagOpen className="h-5 w-5" />
-              <span className="absolute -right-1 -top-1 flex h-4.75 w-4.75 items-center justify-center rounded-full bg-accent font-body text-[11px] font-bold text-[#04060a]">
-                0
-              </span>
-            </Link>
+            <CartLink />
             <Hamburger
               isOpen={isMenuOpen}
               onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -63,16 +78,7 @@ const Navbar = () => {
               <img src={WHATSAPP_ICON} alt="" className="h-4 w-4" />
               {siteConfig.whatsappDisplay}
             </a>
-            <Link
-              to="/cart"
-              className="glow-border-hover relative rounded-full bg-white/5 p-2.5 text-snow transition-colors"
-              aria-label="Cart"
-            >
-              <PiShoppingBagOpen className="h-5 w-5" />
-              <span className="absolute -right-1 -top-1 flex h-4.75 w-4.75 items-center justify-center rounded-full bg-accent font-body text-[11px] font-bold text-[#04060a]">
-                0
-              </span>
-            </Link>
+            <CartLink />
           </div>
         </div>
 
