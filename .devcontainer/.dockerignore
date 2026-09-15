@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Logs and temporary files
+*.log
+npm-debug.log*
+yarn-error.log*
+logs/
+
+# Editor directories and files
+.vscode/*
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.sw?
+
+# Git
+.git/
+
+# Environment-specific files
+.env.local
+.env.*.local
