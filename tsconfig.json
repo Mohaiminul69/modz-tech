@@ -23,6 +23,7 @@
       "@components/*": ["./src/components/*"],
       "@context/*": ["./src/context/*"],
       "@data/*": ["./src/data/*"],
+      "@utils/*": ["./src/utils/*"],
       "@public/*": ["./public/*"]
     }
   },

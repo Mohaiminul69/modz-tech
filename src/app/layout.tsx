@@ -7,10 +7,11 @@ import {
   Orbitron,
   Rajdhani,
 } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { CartProvider } from "@context/CartContext";
 import Navbar from "@components/Navbar";
-import Footer from "@components/Footer";
+import ConditionalFooter from "@components/ConditionalFooter";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -62,9 +63,29 @@ const RootLayout = ({ children }: LayoutProps<"/">) => {
     >
       <body className="min-h-full flex flex-col">
         <CartProvider>
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: "#0b0e15",
+                color: "#f2f4f7",
+                border: "1px solid rgba(106,169,233,.3)",
+                borderRadius: "14px",
+                fontFamily: "var(--font-body)",
+                fontSize: "13.5px",
+                fontWeight: 600,
+              },
+              success: {
+                iconTheme: {
+                  primary: "#4e9ae8",
+                  secondary: "#0b0e15",
+                },
+              },
+            }}
+          />
           <Navbar />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <ConditionalFooter />
         </CartProvider>
       </body>
     </html>
