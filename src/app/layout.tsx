@@ -61,7 +61,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => {
       data-scroll-behavior="smooth"
       className={`${archivo.variable} ${manrope.variable} ${jetbrainsMono.variable} ${orbitron.variable} ${rajdhani.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <CartProvider>
           <Toaster
             position="bottom-center"
