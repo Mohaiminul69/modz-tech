@@ -10,6 +10,7 @@ import {
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -62,6 +63,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => {
         <CartProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
+          <Footer />
         </CartProvider>
       </body>
     </html>
