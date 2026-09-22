@@ -8,9 +8,9 @@ import {
   Rajdhani,
 } from "next/font/google";
 import "./globals.css";
-import { CartProvider } from "@/context/CartContext";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { CartProvider } from "@context/CartContext";
+import Navbar from "@components/Navbar";
+import Footer from "@components/Footer";
 
 const archivo = Archivo({
   variable: "--font-archivo",

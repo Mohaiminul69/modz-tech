@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import logo from "../../public/brand/modz-tech-logo.png";
+import logo from "@public/brand/modz-tech-logo.png";
 
 const Logo = ({ className = "" }: { className?: string }) => (
   <Link href="/" className={`flex items-center gap-2 ${className}`}>

@@ -7,8 +7,8 @@ import { PiShoppingBagOpen } from "react-icons/pi";
 import Hamburger from "./Hamburger";
 import Logo from "./Logo";
 import NavLinks from "./NavLinks";
-import { siteConfig } from "@/data/siteConfig";
-import { useCart } from "@/context/CartContext";
+import { siteConfig } from "@data/siteConfig";
+import { useCart } from "@context/CartContext";
 
 const WHATSAPP_ICON = "https://cdn.simpleicons.org/whatsapp/f2f4f7";
 
