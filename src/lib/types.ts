@@ -20,6 +20,10 @@ export type BrandItem = {
 
 export type CardProduct = {
   id: string;
+  /** Variant the card's price comes from; "Add to cart" adds this one. */
+  variantId: string;
+  /** More than one variant: the card sends shoppers to the product page to choose. */
+  hasOptions: boolean;
   slug: string;
   name: string;
   /** Lowest current price (sale price if on sale). */

@@ -1,4 +1,4 @@
-type PricedVariant = { price: number; salePrice?: number | null; stock: number };
+export type PricedVariant = { price: number; salePrice?: number | null; stock: number };
 
 /** What the customer pays for a variant right now. */
 export const effectivePrice = (variant: PricedVariant) =>
@@ -11,7 +11,7 @@ export const effectivePrice = (variant: PricedVariant) =>
  * overall when everything is sold out), with its regular price as the old price
  * when it is on sale.
  */
-export const cardPricing = (variants: PricedVariant[]) => {
+export const cardPricing = <V extends PricedVariant>(variants: V[]) => {
   const inStock = variants.filter((variant) => variant.stock > 0);
   const pool = inStock.length > 0 ? inStock : variants;
   const cheapest = pool.reduce((best, variant) => (effectivePrice(variant) < effectivePrice(best) ? variant : best));
@@ -21,5 +21,7 @@ export const cardPricing = (variants: PricedVariant[]) => {
     price,
     oldPrice: price < cheapest.price ? cheapest.price : undefined,
     inStock: inStock.length > 0,
+    /** The variant the card's price comes from (what "Add to cart" adds). */
+    variant: cheapest,
   };
 };

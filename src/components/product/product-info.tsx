@@ -50,7 +50,7 @@ export const ProductInfo = ({ product, messengerUrl }: ProductInfoProps) => {
     <div className="flex flex-col lg:mt-6 lg:gap-6">
       <nav
         aria-label="Product information"
-        className="flex gap-5 overflow-x-auto border-y border-border bg-surface px-4 [scrollbar-width:none] lg:gap-8 lg:border-t-0 lg:bg-transparent lg:px-0"
+        className="flex gap-5 overflow-x-auto border-y border-border bg-surface px-4 scrollbar-none lg:gap-8 lg:border-t-0 lg:bg-transparent lg:px-0"
       >
         {links.map((link, index) => (
           <a

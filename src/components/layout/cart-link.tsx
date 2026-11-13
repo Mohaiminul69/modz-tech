@@ -1,19 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
+import { useCartCount } from "@/lib/cart/store";
 import { cn } from "@/lib/utils";
 
 type CartLinkProps = {
   /** "icon" = mobile header icon with a bubble, "text" = desktop "Cart" link with a pill. */
   variant: "icon" | "text";
-  count?: number;
   current?: boolean;
 };
 
 const cartLabel = (count: number) =>
   count > 0 ? `Cart, ${count} ${count === 1 ? "item" : "items"}` : "Cart";
 
-// TODO(cart stage): read the count from the cart store instead of a prop.
-export const CartLink = ({ variant, count = 0, current = false }: CartLinkProps) => {
+// Count comes from the browser cart, so it fills in after hydration (0 on the server).
+export const CartLink = ({ variant, current = false }: CartLinkProps) => {
+  const count = useCartCount();
+  const shown = count > 99 ? "99+" : count;
+
   if (variant === "icon") {
     return (
       <Link
@@ -31,7 +36,7 @@ export const CartLink = ({ variant, count = 0, current = false }: CartLinkProps)
             aria-hidden="true"
             className="absolute top-1.25 right-0.75 h-4.5 min-w-4.5 rounded-full bg-chrome-accent px-1 text-center font-heading text-[11px] leading-4.5 font-bold text-chrome"
           >
-            {count}
+            {shown}
           </span>
         )}
       </Link>
@@ -55,7 +60,7 @@ export const CartLink = ({ variant, count = 0, current = false }: CartLinkProps)
           aria-hidden="true"
           className="h-5 min-w-5 rounded-full bg-chrome-accent px-1 text-center font-heading text-[11px] leading-5 font-bold text-chrome"
         >
-          {count}
+          {shown}
         </span>
       )}
     </Link>

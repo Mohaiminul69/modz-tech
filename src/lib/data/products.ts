@@ -12,7 +12,8 @@ import { CATALOG_TAG } from "./catalog";
 /** Cache tag for products. Call updateTag("products") after admin edits or new orders. */
 export const PRODUCTS_TAG = "products";
 
-const CARD_FIELDS = "slug name shortSpec images variants.price variants.salePrice variants.stock variants.images tags";
+const CARD_FIELDS =
+  "slug name shortSpec images variants._id variants.price variants.salePrice variants.stock variants.images tags";
 
 type CardSource = Pick<ProductDoc, "slug" | "name" | "shortSpec" | "images" | "variants" | "tags"> & {
   _id: { toString(): string };
@@ -20,13 +21,16 @@ type CardSource = Pick<ProductDoc, "slug" | "name" | "shortSpec" | "images" | "v
 
 export const toCardProduct = (doc: CardSource): CardProduct => {
   const image = doc.images[0] ?? doc.variants.find((variant) => variant.images?.length)?.images[0];
+  const { variant, ...pricing } = cardPricing(doc.variants);
   return {
     id: doc._id.toString(),
+    variantId: variant._id.toString(),
+    hasOptions: doc.variants.length > 1,
     slug: doc.slug,
     name: doc.name,
     spec: doc.shortSpec,
     isNew: doc.tags.includes("new"),
-    ...cardPricing(doc.variants),
+    ...pricing,
     image: image ? { src: image.src, position: image.position || undefined } : null,
   };
 };

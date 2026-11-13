@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { Banknote, MessageCircle, Share2, ShieldCheck, Truck } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { addToCart } from "@/lib/cart/store";
 import { formatPrice } from "@/lib/format";
 import { effectivePrice } from "@/lib/pricing";
 import type { ProductDetail, ProductDetailImage } from "@/lib/types";
@@ -31,6 +33,7 @@ const uniqueImages = (images: ProductDetailImage[]) => {
  */
 export const ProductView = ({ product, offerEndsLabel, messengerUrl }: ProductViewProps) => {
   const ids = useId();
+  const router = useRouter();
   const initialVariant = product.variants.find((variant) => variant.stock > 0) ?? product.variants[0];
   const [variantId, setVariantId] = useState(initialVariant.id);
   const [imageIndex, setImageIndex] = useState(0);
@@ -52,14 +55,21 @@ export const ProductView = ({ product, offerEndsLabel, messengerUrl }: ProductVi
     setQuantity((current) => Math.min(current, Math.max(1, Math.min(next?.stock ?? 1, MAX_QUANTITY))));
   };
 
-  // TODO(cart stage): add to cart / go to checkout. Until then, point shoppers to Messenger.
-  const orderSoon = () =>
-    toast.info("Online ordering opens very soon.", {
-      description: "Message us on Messenger and we'll take your order.",
-      action: messengerUrl
-        ? { label: "Message us", onClick: () => window.open(messengerUrl, "_blank", "noopener,noreferrer") }
-        : undefined,
+  const add = () =>
+    addToCart({ productId: product.id, variantId: variant.id, slug: product.slug }, quantity, variant.stock);
+
+  const addAndStay = () => {
+    add();
+    toast.success("Added to cart.", {
+      description: `${product.name}${product.variants.length > 1 ? `, ${variant.name}` : ""} × ${quantity}`,
+      action: { label: "View cart", onClick: () => router.push("/cart") },
     });
+  };
+
+  const orderNow = () => {
+    add();
+    router.push("/checkout");
+  };
 
   const share = async () => {
     const url = window.location.href;
@@ -254,10 +264,10 @@ export const ProductView = ({ product, offerEndsLabel, messengerUrl }: ProductVi
 
           {inStock ? (
             <div className="grid grid-cols-2 gap-2 lg:gap-3">
-              <Button variant="outline" className="h-12 lg:h-13 lg:text-base" onClick={orderSoon}>
+              <Button variant="outline" className="h-12 lg:h-13 lg:text-base" onClick={addAndStay}>
                 Add to cart
               </Button>
-              <Button className="h-12 lg:h-13 lg:text-base" onClick={orderSoon}>
+              <Button className="h-12 lg:h-13 lg:text-base" onClick={orderNow}>
                 Order now
               </Button>
             </div>
@@ -318,7 +328,7 @@ export const ProductView = ({ product, offerEndsLabel, messengerUrl }: ProductVi
           <span className="text-small text-ink-muted">Cash on delivery</span>
         </div>
         {inStock ? (
-          <Button className="ml-auto h-12 flex-1" onClick={orderSoon}>
+          <Button className="ml-auto h-12 flex-1" onClick={orderNow}>
             Order now
           </Button>
         ) : (

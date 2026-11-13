@@ -26,7 +26,8 @@ type SiteHeaderProps = {
   current?: "cart" | "track" | "login";
   /** Highlights a category in the desktop category nav ("all" = All products). */
   activeCategory?: string;
-  cartCount?: number;
+  /** false = desktop header only (log in / sign up have their own dark band on phones). */
+  mobile?: boolean;
 };
 
 const iconLinkClass = "flex size-11 items-center justify-center rounded-md text-chrome-silver";
@@ -50,12 +51,17 @@ export const SiteHeader = async ({
   showCategoryNav = true,
   current,
   activeCategory,
-  cartCount = 0,
+  mobile = true,
 }: SiteHeaderProps) => {
   const categories = await getCategories();
 
   return (
-    <header className="mz-chrome sticky top-0 z-40 border-b border-chrome-border bg-chrome lg:static">
+    <header
+      className={cn(
+        "mz-chrome sticky top-0 z-40 border-b border-chrome-border bg-chrome lg:static",
+        !mobile && "hidden lg:block",
+      )}
+    >
       {/* Mobile */}
       <div className={cn("flex flex-col lg:hidden", showSearch ? "gap-3 px-4 py-3" : "px-3 py-2.5")}>
         <div className="flex items-center gap-2">
@@ -82,7 +88,7 @@ export const SiteHeader = async ({
                   </Link>
                 );
               }
-              return <CartLink key={action} variant="icon" count={cartCount} current={current === "cart"} />;
+              return <CartLink key={action} variant="icon" current={current === "cart"} />;
             })}
           </div>
         </div>
@@ -111,7 +117,7 @@ export const SiteHeader = async ({
               <User aria-hidden="true" strokeWidth={1.5} className="size-5" />
               Log in
             </Link>
-            <CartLink variant="text" count={cartCount} current={current === "cart"} />
+            <CartLink variant="text" current={current === "cart"} />
           </nav>
         </div>
         {showCategoryNav && (

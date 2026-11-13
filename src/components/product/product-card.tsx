@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CardCartButton } from "@/components/cart/card-cart-button";
 import { buttonVariants } from "@/components/ui/button";
 import type { CardProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -23,8 +24,7 @@ const badgeClass =
 
 /*
  * The image and name form one link (stretched over the card); the button is a
- * separate link so there are no nested interactive elements.
- * TODO(cart stage): "Add to cart" adds to the cart instead of opening the product.
+ * separate control (CardCartButton) so there are no nested interactive elements.
  */
 export const ProductCard = ({
   product,
@@ -36,7 +36,6 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const href = `/product/${product.slug}`;
   const onSale = product.oldPrice !== undefined && product.oldPrice > product.price;
-  const label = cta === "order" ? "Order now" : "Add to cart";
 
   return (
     <article
@@ -76,16 +75,7 @@ export const ProductCard = ({
         <PriceTag price={product.price} oldPrice={product.oldPrice} className="mt-auto pt-1" />
         {showSpec && <p className="text-small text-ink-muted">{product.spec}</p>}
         {!showButton ? null : product.inStock ? (
-          <Link
-            href={href}
-            aria-label={`${label}: ${product.name}`}
-            className={cn(
-              buttonVariants({ variant: cta === "order" ? "default" : "outline", size: "sm" }),
-              "relative z-10 mt-2 h-10 w-full lg:mt-2.5",
-            )}
-          >
-            {label}
-          </Link>
+          <CardCartButton product={product} cta={cta} className="mt-2 lg:mt-2.5" />
         ) : (
           <span
             className={cn(

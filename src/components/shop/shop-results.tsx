@@ -129,7 +129,7 @@ export const ShopResults = async ({ searchParams, fixedCategory }: ShopResultsPr
       </p>
 
       {/* Phones: category chips */}
-      <nav aria-label="Categories" className="flex gap-2 overflow-x-auto p-4 [scrollbar-width:none] lg:hidden">
+      <nav aria-label="Categories" className="flex gap-2 overflow-x-auto p-4 scrollbar-none lg:hidden">
         <Link
           href={buildShopHref({ ...current, categories: [], page: 1 })}
           aria-current={current.categories.length === 0 ? "page" : undefined}

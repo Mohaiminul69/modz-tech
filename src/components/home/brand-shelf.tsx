@@ -32,7 +32,7 @@ export const BrandShelf = ({ title, href, panels }: BrandShelfProps) => {
   const [selected, setSelected] = useState(panels[0]?.slug);
 
   const chips = (
-    <div className="flex gap-2 overflow-x-auto [scrollbar-width:none]" role="group" aria-label="Choose a brand">
+    <div className="flex gap-2 overflow-x-auto scrollbar-none" role="group" aria-label="Choose a brand">
       {panels.map((panel) => (
         <button
           key={panel.slug}
