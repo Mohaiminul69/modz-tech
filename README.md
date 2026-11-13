@@ -18,12 +18,23 @@ Mobile-first online shop for gadgets and mobile accessories in Bangladesh. Cash 
    ```bash
    npm install
    ```
-3. Copy `.env.example` to `.env.local` and fill in the values (see below).
-4. Start the dev server:
+3. Copy `.env.example` to `.env.local` and fill in the values (see below). `MONGODB_URI` is required: the site reads products, categories and settings from MongoDB, including during `npm run build`.
+4. Seed the database (categories, brands, sample products, shop settings):
+   ```bash
+   npm run seed
+   ```
+5. Start the dev server:
    ```bash
    npm run dev
    ```
    Open http://localhost:3000.
+
+## Database
+
+- Models live in `src/models` (Category, Brand, Product with variants, Settings).
+- Pages read data through cached functions in `src/lib/data` (`"use cache"` + cache tags `catalog`, `products`, `settings`). After changing data, those tags must be refreshed (the admin panel will do this); in development, restarting `npm run dev` also works.
+- `npm run seed` only creates records that are missing, so it is safe to re-run and never overwrites edits.
+- Only the Hoco EQ34 Plus price in the seed is real; the other prices are samples. Use a separate database name for development (e.g. `modz-tech-dev`) and keep sample data out of production.
 
 ## Environment variables
 
@@ -46,4 +57,4 @@ Design handoff files live in `/design`. Brand colours, fonts, radii and shadows 
 
 ## Still to document
 
-Creating the admin user, seeding the database and deploying are added as those parts are built.
+Creating the admin user and deploying are added as those parts are built.

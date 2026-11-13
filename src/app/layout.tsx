@@ -25,6 +25,8 @@ const saira = Saira({
 });
 
 export const metadata: Metadata = {
+  // Base for canonical URLs and Open Graph images (Facebook shares).
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
     default: "Modz Tech | Gadgets and mobile accessories in Bangladesh",
     template: "%s | Modz Tech",

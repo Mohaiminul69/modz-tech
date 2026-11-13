@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { getSettings } from "@/lib/data/settings";
 import { getCurrentYear } from "@/lib/date";
+import type { SiteSettings } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { NewsletterForm } from "./newsletter-form";
@@ -16,6 +18,11 @@ type FooterVariant = "full" | "compact" | "minimal" | "checkout";
 type SiteFooterProps = {
   variant?: FooterVariant;
   className?: string;
+};
+
+type VariantProps = {
+  year: number;
+  settings: Pick<SiteSettings, "phone" | "facebookUrl" | "facebookLabel">;
 };
 
 // Policy pages are out of scope for launch; these links 404 until they exist.
@@ -42,14 +49,15 @@ const linkLight = "rounded-sm text-on-chrome hover:text-chrome-accent";
 const linkMuted = "rounded-sm text-on-chrome-muted hover:text-on-chrome";
 const linkAccent = "rounded-sm text-chrome-accent hover:text-on-chrome";
 
-const FacebookLink = ({ className }: { className?: string }) => (
-  <a href={siteConfig.facebookUrl} target="_blank" rel="noopener noreferrer" className={className ?? linkAccent}>
-    {siteConfig.facebookLabel}
-  </a>
-);
+const FacebookLink = ({ settings, className }: { settings: VariantProps["settings"]; className?: string }) =>
+  settings.facebookUrl ? (
+    <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className={className ?? linkAccent}>
+      {settings.facebookLabel}
+    </a>
+  ) : null;
 
 // Single-row desktop footer used by every variant except "full".
-const DesktopRow = () => (
+const DesktopRow = ({ settings }: Pick<VariantProps, "settings">) => (
   <div className="mx-auto hidden max-w-content items-center gap-8 px-4 py-7 text-label text-on-chrome-muted lg:flex xl:px-0">
     <Logo className="h-10" />
     <span>Online only · Cash on delivery all over Bangladesh</span>
@@ -60,12 +68,12 @@ const DesktopRow = () => (
       <Link href="/contact" className={linkLight}>
         Contact us
       </Link>
-      <FacebookLink />
+      <FacebookLink settings={settings} />
     </span>
   </div>
 );
 
-const FullFooter = ({ year }: { year: number }) => (
+const FullFooter = ({ year, settings }: VariantProps) => (
   <>
     {/* Mobile */}
     <div className="flex flex-col gap-5 px-4 pt-8 pb-6 lg:hidden">
@@ -76,9 +84,9 @@ const FullFooter = ({ year }: { year: number }) => (
       <Logo className="h-12 self-start" />
       <p className="text-chrome-silver">{siteConfig.tagline}</p>
       <div className="flex flex-col gap-1 text-label leading-5.5 text-on-chrome-muted">
-        <span>Phone: {siteConfig.phone}</span>
+        {settings.phone && <span>Phone: {settings.phone}</span>}
         <span>Dhaka, Bangladesh</span>
-        <FacebookLink className={cn(linkAccent, "self-start")} />
+        <FacebookLink settings={settings} className={cn(linkAccent, "self-start")} />
       </div>
       <nav
         aria-label="Footer"
@@ -122,8 +130,8 @@ const FullFooter = ({ year }: { year: number }) => (
         <div className="flex flex-col gap-2.5 text-label">
           <h2 className="text-body font-semibold tracking-normal text-on-chrome">Get offers first</h2>
           <NewsletterForm />
-          <span className="text-on-chrome-muted">Phone: {siteConfig.phone}</span>
-          <FacebookLink className={cn(linkAccent, "self-start")} />
+          {settings.phone && <span className="text-on-chrome-muted">Phone: {settings.phone}</span>}
+          <FacebookLink settings={settings} className={cn(linkAccent, "self-start")} />
         </div>
       </div>
       <div className="border-t border-chrome-border">
@@ -135,14 +143,14 @@ const FullFooter = ({ year }: { year: number }) => (
   </>
 );
 
-const CompactFooter = ({ year }: { year: number }) => (
+const CompactFooter = ({ year, settings }: VariantProps) => (
   <>
     <div className="flex flex-col gap-4 px-4 pt-7 pb-6 lg:hidden">
       <Logo className="h-11 self-start" />
       <p className="text-chrome-silver">{siteConfig.tagline}</p>
       <div className="flex flex-col gap-1 text-label leading-5.5 text-on-chrome-muted">
-        <span>Phone: {siteConfig.phone}</span>
-        <FacebookLink className={cn(linkAccent, "self-start")} />
+        {settings.phone && <span>Phone: {settings.phone}</span>}
+        <FacebookLink settings={settings} className={cn(linkAccent, "self-start")} />
       </div>
       <nav
         aria-label="Footer"
@@ -156,16 +164,20 @@ const CompactFooter = ({ year }: { year: number }) => (
       </nav>
       <span className="text-small text-on-chrome-muted">Cash on delivery available · © {year} Modz Tech</span>
     </div>
-    <DesktopRow />
+    <DesktopRow settings={settings} />
   </>
 );
 
-const MinimalFooter = ({ year }: { year: number }) => (
+const MinimalFooter = ({ year, settings }: VariantProps) => (
   <>
     <div className="flex flex-col gap-2 px-4 pt-6 pb-5 text-small text-on-chrome-muted lg:hidden">
-      <span>
-        Phone: {siteConfig.phone} · <FacebookLink />
-      </span>
+      {(settings.phone || settings.facebookUrl) && (
+        <span>
+          {settings.phone && <>Phone: {settings.phone}</>}
+          {settings.phone && settings.facebookUrl && " · "}
+          <FacebookLink settings={settings} />
+        </span>
+      )}
       <span>
         <Link href="/contact" className={linkAccent}>
           Contact us
@@ -173,14 +185,18 @@ const MinimalFooter = ({ year }: { year: number }) => (
         · © {year} Modz Tech
       </span>
     </div>
-    <DesktopRow />
+    <DesktopRow settings={settings} />
   </>
 );
 
-const CheckoutFooter = ({ year }: { year: number }) => (
+const CheckoutFooter = ({ year, settings }: VariantProps) => (
   <>
     <div className="flex flex-col gap-2 px-4 pt-6 pb-5 text-small text-on-chrome-muted lg:hidden">
-      <span>Need help? Call {siteConfig.phone} or message us on Facebook.</span>
+      <span>
+        {settings.phone
+          ? `Need help? Call ${settings.phone} or message us on Facebook.`
+          : "Need help? Message us on Facebook."}
+      </span>
       <span>
         <Link href="/contact" className={linkAccent}>
           Contact us
@@ -202,15 +218,15 @@ const variants = {
   compact: CompactFooter,
   minimal: MinimalFooter,
   checkout: CheckoutFooter,
-} satisfies Record<FooterVariant, (props: { year: number }) => React.ReactNode>;
+} satisfies Record<FooterVariant, (props: VariantProps) => React.ReactNode>;
 
 export const SiteFooter = async ({ variant = "minimal", className }: SiteFooterProps) => {
-  const year = await getCurrentYear();
+  const [year, settings] = await Promise.all([getCurrentYear(), getSettings()]);
   const Variant = variants[variant];
 
   return (
     <footer className={cn("mz-chrome bg-chrome text-on-chrome", className)}>
-      <Variant year={year} />
+      <Variant year={year} settings={settings} />
     </footer>
   );
 };

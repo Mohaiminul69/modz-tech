@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Menu } from "lucide-react";
-import { categories } from "@/config/categories";
+import type { CategoryItem } from "@/lib/types";
 import {
   Sheet,
   SheetClose,
@@ -33,7 +33,7 @@ const MenuLink = ({ href, children, offer = false }: { href: string; children: R
 );
 
 // Mobile-only menu drawer (no mockup for its contents: plain list on a light sheet).
-export const MobileMenu = () => (
+export const MobileMenu = ({ categories }: { categories: CategoryItem[] }) => (
   <Sheet>
     <SheetTrigger
       aria-label="Menu"

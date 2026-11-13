@@ -1,20 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import type { SaleBanner as SaleBannerData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Countdown } from "./countdown";
 
-type SaleBannerProps = {
-  badge: string;
-  title: string;
-  description: string;
-  cta: { label: string; href: string };
-  endsAt: string;
-  image: { src: string; alt: string; position?: string };
-};
-
 // Dark promo band: full-bleed on phones, rounded card inside the content width on desktop.
-export const SaleBanner = ({ badge, title, description, cta, endsAt, image }: SaleBannerProps) => (
+export const SaleBanner = ({ badge, title, description, cta, endsAt, image }: SaleBannerData) => (
   <section
     aria-labelledby="sale-title"
     className="mz-chrome relative my-4 flex items-center gap-4 overflow-hidden bg-chrome px-4 py-6 text-on-chrome lg:my-0 lg:mt-12 lg:gap-10 lg:rounded-2xl lg:px-12 lg:py-10"
@@ -52,7 +44,7 @@ export const SaleBanner = ({ badge, title, description, cta, endsAt, image }: Sa
         <Link href={cta.href} className={cn(buttonVariants(), "hidden h-12 px-6 lg:inline-flex")}>
           {cta.label}
         </Link>
-        <Countdown endsAt={endsAt} className="self-start lg:self-center" />
+        {endsAt && <Countdown endsAt={endsAt} className="self-start lg:self-center" />}
       </div>
     </div>
 

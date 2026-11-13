@@ -1,14 +1,8 @@
 /*
- * Shop contact details and links.
- * TEMPORARY: these move to the admin Settings page (stored in MongoDB) in the
- * admin stage. Bracketed values are placeholders from the mockup.
+ * Fixed brand copy. Contact details, links and delivery fees live in the
+ * Settings document in MongoDB (edited from the admin panel), see src/lib/data/settings.ts.
  */
 export const siteConfig = {
   name: "Modz Tech",
   tagline: "Tech that connects. Quality that lasts.",
-  phone: "[YOUR PHONE NUMBER]",
-  email: "[YOUR EMAIL]",
-  facebookUrl: "https://facebook.com/ModzTech",
-  facebookLabel: "facebook.com/ModzTech",
-  messengerUrl: "https://m.me/ModzTech",
 } as const;

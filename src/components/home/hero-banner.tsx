@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import type { HeroSlide } from "@/config/hero";
+import type { HeroSlide } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { HeroCarousel } from "./hero-carousel";

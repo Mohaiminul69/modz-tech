@@ -1,4 +1,4 @@
-import type { CardProduct } from "@/config/sample-products";
+import type { CardProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "./product-card";
 
@@ -14,7 +14,7 @@ export const ProductGrid = ({ products, cta, mobileCount = 2 }: ProductGridProps
   <div className="grid grid-cols-2 gap-3 lg:grid-cols-5 lg:gap-6">
     {products.slice(0, 5).map((product, index) => (
       <ProductCard
-        key={product.slug}
+        key={product.id}
         product={product}
         cta={cta}
         className={cn(index >= mobileCount && "hidden lg:flex")}
