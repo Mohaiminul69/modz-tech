@@ -1,146 +1,220 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-@theme {
-  --font-display: var(--font-orbitron), "Inter", system-ui, sans-serif;
-  --font-label: var(--font-rajdhani), "Inter", system-ui, sans-serif;
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-heading: var(--font-archivo), "Inter", system-ui, sans-serif;
-  --font-body: var(--font-manrope), "Inter", system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+/*
+ * Modz Tech design tokens (design/HANDOFF.md §3–5, design/tokens.json).
+ * Light is the only theme at launch.
+ * Never hard-code hex values in components: use the utilities these tokens
+ * generate (bg-chrome, text-on-chrome-muted, bg-brand, text-ink-muted, ...).
+ */
+:root {
+  /* Page (light) */
+  --page: #f4f6f9;
+  --surface: #ffffff;
+  --media-frame: #eef1f5;
+  --ink: #0b0f16;
+  --ink-muted: #4f5968;
+  --silver: #5d6470;
+  --line: #dde2e9;
+  --line-control: #848d9b;
+  --brand: #2563d0;
+  --on-brand: #ffffff;
+  --brand-bright: #1f5bc4;
+  --brand-tint: #e8f0fd;
+  --offer: #f07800;
+  --on-offer: #0b0b0b;
+  --offer-ink: #a84a00;
+  --success: #0f7a4b;
+  --danger: #c62f35;
 
-  --color-bg: #07080a;
-  --color-bg-top: #0a0c10;
-  --color-surface: #0a0c11;
-  --color-surface-media: #0a0d12;
-  --color-snow: #f2f4f7;
-  --color-accent: #4e9ae8;
-  --color-accent-deep: #2a6fbf;
-  --color-accent-dark: #14335e;
-  --color-accent-tint: #a9c9ee;
+  /* Dark brand zones: header, category nav, hero, promo banners, footer, bottom nav */
+  --chrome: #05060a;
+  --chrome-surface: #141922;
+  --chrome-border: #2c3440;
+  --on-chrome: #eef1f5;
+  --on-chrome-muted: #9aa3b0;
+  --chrome-silver: #d9dade;
+  --chrome-accent: #66aae7;
+  --chrome-control: #6b7586; /* outline-button edge inside dark zones */
+  --offer-chrome: #fc7b03;
 
-  /* Base surfaces */
-  --color-ink: #050608;
-  --color-ink-soft: #0b0e15;
-  --color-ink-elevated: #11151f;
-  --color-line: rgba(255, 255, 255, 0.08);
+  /* shadcn semantic variables, mapped onto the brand tokens */
+  --background: var(--page);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: var(--on-brand);
+  --secondary: var(--media-frame);
+  --secondary-foreground: var(--ink);
+  --muted: var(--media-frame);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--brand-tint);
+  --accent-foreground: var(--brand-bright);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-control);
+  --ring: var(--brand-bright);
 
-  /* Chrome / silver text */
-  --color-chrome-100: #f5f7fa;
-  --color-chrome-300: #cfd4db;
-  --color-chrome-500: #9aa1ab;
-  --color-chrome-700: #5b616b;
-
-  /* Electric blue accent */
-  --color-brand-50: #0a1220;
-  --color-brand-100: #0f1b30;
-  --color-brand-200: #16294a;
-  --color-brand-400: #4fb3ff;
-  --color-brand-500: #2f8eff;
-
-  /* Cyberpunk accent flares — used sparingly against the blue/chrome base */
-  --color-neon-yellow: #f5d90a;
-  --color-neon-red: #ff2e4d;
-  --color-neon-green: #39ff88;
+  --radius: 0.75rem;
 }
 
-html {
-  scroll-behavior: smooth;
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Page colours */
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-media-frame: var(--media-frame);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-silver: var(--silver);
+  --color-control: var(--line-control);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-brand-bright: var(--brand-bright);
+  --color-brand-tint: var(--brand-tint);
+  --color-offer: var(--offer);
+  --color-on-offer: var(--on-offer);
+  --color-offer-ink: var(--offer-ink);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+
+  /* Chrome (dark zone) colours */
+  --color-chrome: var(--chrome);
+  --color-chrome-surface: var(--chrome-surface);
+  --color-chrome-border: var(--chrome-border);
+  --color-on-chrome: var(--on-chrome);
+  --color-on-chrome-muted: var(--on-chrome-muted);
+  --color-chrome-silver: var(--chrome-silver);
+  --color-chrome-accent: var(--chrome-accent);
+  --color-chrome-control: var(--chrome-control);
+  --color-offer-chrome: var(--offer-chrome);
+
+  /* shadcn colours */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Fonts (set by next/font in the root layout) */
+  --font-sans: var(--font-hind-siliguri), system-ui, sans-serif;
+  --font-heading: var(--font-sora), var(--font-hind-siliguri), sans-serif;
+  --font-eyebrow: var(--font-saira), sans-serif;
+
+  /* Radii: badges 4px, buttons/inputs/tiles 8px, cards/panels/images 12px, sheet top 16px */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-4xl: 24px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgb(11 15 22 / 0.06), 0 6px 18px rgb(11 15 22 / 0.08);
+  --shadow-glow: 0 0 0 1px rgb(31 91 196 / 0.35), 0 8px 24px rgb(31 91 196 / 0.18);
+
+  /* Type scale (HANDOFF §4). Plain name = mobile, -lg = desktop. */
+  --text-hero: 34px;
+  --text-hero--line-height: 38px;
+  --text-hero-lg: 56px;
+  --text-hero-lg--line-height: 60px;
+  --text-page-title: 26px;
+  --text-page-title--line-height: 32px;
+  --text-page-title-lg: 32px;
+  --text-page-title-lg--line-height: 38px;
+  --text-section: 22px;
+  --text-section--line-height: 28px;
+  --text-section-lg: 28px;
+  --text-section-lg--line-height: 34px;
+  --text-promo-lg: 36px;
+  --text-promo-lg--line-height: 42px;
+  --text-panel-title: 18px;
+  --text-panel-title--line-height: 24px;
+  --text-panel-title-lg: 20px;
+  --text-panel-title-lg--line-height: 26px;
+  --text-card-name: 14px;
+  --text-card-name--line-height: 20px;
+  --text-card-name-lg: 15px;
+  --text-card-name-lg--line-height: 22px;
+  --text-card-price: 18px;
+  --text-card-price--line-height: 22px;
+  --text-card-price-lg: 20px;
+  --text-card-price-lg--line-height: 26px;
+  --text-price: 30px;
+  --text-price--line-height: 34px;
+  --text-price-lg: 36px;
+  --text-price-lg--line-height: 40px;
+  --text-body: 15px;
+  --text-body--line-height: 24px;
+  --text-lead: 17px;
+  --text-lead--line-height: 28px;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-small: 12px;
+  --text-small--line-height: 16px;
+  --text-small-lg: 13px;
+  --text-small-lg--line-height: 18px;
+  --text-eyebrow: 11px;
+  --text-eyebrow--line-height: 16px;
+  --text-eyebrow-lg: 12px;
+  --text-eyebrow-lg--line-height: 16px;
+
+  /* Layout */
+  --container-content: 1200px;
 }
 
-body {
-  margin: 0;
-  background: var(--color-bg);
-  color: var(--color-snow);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-body text-foreground;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading font-bold tracking-[-0.02em];
+  }
+  /* 2px brand-bright focus ring, 2px offset, on every interactive element */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+  /* Inside dark brand zones the ring uses the glow blue so it stays visible */
+  .mz-chrome :focus-visible {
+    @apply outline-chrome-accent;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
-::selection {
-  background: var(--color-brand-500);
-  color: white;
-}
-
-/* Metallic chrome text, like the Modz Tech wordmark */
-.text-chrome {
-  background: linear-gradient(180deg, #ffffff 10%, #d7dce2 45%, #8a919c 85%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Neon glow accents */
-.glow-text-blue {
-  filter: drop-shadow(0 0 10px rgba(47, 142, 255, 0.55));
-}
-
-.glow-border {
-  box-shadow:
-    0 0 0 1px rgba(79, 179, 255, 0.35),
-    0 0 30px rgba(47, 142, 255, 0.15);
-}
-
-.glow-border-hover {
-  transition:
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
-}
-.glow-border-hover:hover {
-  box-shadow:
-    0 0 0 1px rgba(79, 179, 255, 0.5),
-    0 0 40px rgba(47, 142, 255, 0.25);
-}
-
-/* Diagonal light streak, used to echo the hero banner's beam lines */
-.beam-line {
-  position: absolute;
-  width: 2px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(79, 179, 255, 0.7),
-    transparent
-  );
-  filter: blur(0.5px);
-  transform: rotate(14deg);
-}
-
-.beam-line-yellow {
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(245, 217, 10, 0.6),
-    transparent
-  );
-}
-
-.bg-grid {
-  background-image:
-    linear-gradient(rgba(79, 179, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79, 179, 255, 0.06) 1px, transparent 1px);
-  background-size: 44px 44px;
-}
-
-/* Brand gradient — the blue accent used on primary buttons (Hero CTA, etc).
-   Diagonal with a wide light-to-dark range so the transition actually reads
-   as a gradient rather than a near-flat fill. */
-.bg-brand-gradient {
-  background-image: linear-gradient(
-    135deg,
-    var(--color-accent-tint) 0%,
-    var(--color-accent) 45%,
-    var(--color-accent-dark) 100%
-  );
-}
-
-.text-brand-gradient {
-  background-image: linear-gradient(
-    135deg,
-    var(--color-accent-tint) 0%,
-    var(--color-accent) 45%,
-    var(--color-accent-dark) 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+@layer utilities {
+  /* Small spaced-out uppercase labels (Saira). Nowhere else uses Saira. */
+  .eyebrow {
+    @apply font-eyebrow text-eyebrow font-semibold tracking-[0.24em] uppercase lg:text-eyebrow-lg;
+  }
 }

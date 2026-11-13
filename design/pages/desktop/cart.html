@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Modz Tech cart, desktop</title>
+
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&amp;family=Sora:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#f4f6f9}
+a{color:#1f5bc4}a:hover{color:#2563d0}
+</style>
+</helmet>
+<div style="width: 1440px; background: #f4f6f9; color: #0b0f16; font-family: 'Hind Siliguri', system-ui, sans-serif; font-size: 15px; line-height: 24px; display: flex; flex-direction: column;">
+
+  <header style="background: #05060a; border-bottom: 1px solid #2c3440;">
+    <div style="width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 14px 0;">
+      <a href="home.html" aria-label="Modz Tech home"><img src="../../assets/logos/modz-tech-wordmark.webp" alt="Modz Tech" style="height: 44px; width: auto; display: block;"></a>
+      <label style="flex: 1; max-width: 620px; margin: 0 auto; display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 6px 0 16px; background: #141922; border: 1px solid #2c3440; border-radius: 8px; color: #9aa3b0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" placeholder="Search earbuds, chargers, watches…" aria-label="Search products" style="flex: 1; min-width: 0; background: transparent; border: 0; color: #eef1f5; font: inherit; outline: none;">
+        <button style="height: 36px; padding: 0 16px; border-radius: 6px; border: 0; background: #2563d0; color: #ffffff; font: 600 14px 'Hind Siliguri', sans-serif;">Search</button>
+      </label>
+      <nav aria-label="Account" style="display: flex; align-items: center; gap: 4px;">
+        <a href="../mobile/track-order.html" style="display: flex; align-items: center; height: 44px; padding: 0 12px; color: #d9dade; text-decoration: none; font-size: 14px; font-weight: 500;">Track order</a>
+        <a href="../mobile/login.html" style="display: flex; align-items: center; height: 44px; padding: 0 12px; color: #d9dade; text-decoration: none; font-size: 14px; font-weight: 500;">Log in</a>
+        <a href="cart.html" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; color: #66aae7; text-decoration: none; font-size: 14px; font-weight: 600;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.4 11.2a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 7H6"/></svg>Cart<span style="min-width: 20px; height: 20px; border-radius: 999px; background: #66aae7; color: #05060a; font: 700 11px/20px Sora, sans-serif; text-align: center;">2</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <div style="width: 1200px; margin: 0 auto; padding: 24px 0 64px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <nav aria-label="Breadcrumb" style="font-size: 13px; line-height: 18px; color: #4f5968; display: flex; gap: 8px;"><a href="home.html" style="text-decoration: none;">Home</a><span aria-hidden="true">/</span><span style="color: #0b0f16;">Cart</span></nav>
+      <h1 style="margin: 0; font-family: Sora, sans-serif; font-size: 32px; line-height: 38px; font-weight: 700; letter-spacing: -0.02em;">Your cart <span style="font-size: 18px; font-weight: 400; color: #4f5968; letter-spacing: 0;">2 items</span></h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 32px; align-items: start;">
+      <div style="display: flex; flex-direction: column; gap: 32px;">
+        <!-- Items table -->
+        <div style="background: #ffffff; border: 1px solid #dde2e9; border-radius: 12px; overflow: hidden;">
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) 120px 140px 120px 48px; gap: 16px; padding: 12px 20px; background: #eef1f5; font-size: 13px; line-height: 18px; font-weight: 600; color: #4f5968;">
+            <span>Product</span><span>Price</span><span>Quantity</span><span style="text-align: right;">Total</span><span></span>
+          </div>
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) 120px 140px 120px 48px; gap: 16px; align-items: center; padding: 20px;">
+            <div style="display: flex; gap: 16px; align-items: center; min-width: 0;">
+              <img src="../../assets/product-posts/post-hoco-eq34-plus.webp" alt="Hoco EQ34 Plus" style="width: 88px; height: 88px; object-fit: cover; object-position: center 60%; border-radius: 8px; background: #eef1f5; display: block; flex: none;">
+              <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                <a href="product.html" style="font-size: 15px; line-height: 22px; color: #0b0f16; text-decoration: none;">Hoco EQ34 Plus ANC + ENC Wireless Earbuds</a>
+                <span style="font-size: 13px; line-height: 18px; color: #4f5968;">Colour: Black</span>
+                <span style="font-size: 13px; line-height: 18px; color: #0f7a4b; font-weight: 600;">✓ In stock</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; font-family: Sora, sans-serif;"><span style="font-size: 17px; font-weight: 700;">৳729</span><span style="font-size: 13px; color: #4f5968; text-decoration: line-through;">৳800</span></div>
+            <div style="display: inline-flex; align-items: center; border: 1px solid #848d9b; border-radius: 8px; width: max-content;">
+              <button aria-label="Decrease quantity" style="width: 40px; height: 40px; background: transparent; border: 0; font-size: 18px; color: #0b0f16;">−</button>
+              <span style="width: 32px; text-align: center; font: 600 15px Sora, sans-serif;">2</span>
+              <button aria-label="Increase quantity" style="width: 40px; height: 40px; background: transparent; border: 0; font-size: 18px; color: #0b0f16;">+</button>
+            </div>
+            <span style="text-align: right; font: 700 18px Sora, sans-serif;">৳1,458</span>
+            <button aria-label="Remove Hoco EQ34 Plus" style="width: 44px; height: 44px; background: transparent; border: 0; color: #c62f35;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+          </div>
+        </div>
+        <a href="shop.html" style="align-self: flex-start; font-size: 15px; font-weight: 600; text-decoration: none;">← Continue shopping</a>
+
+        <!-- Goes well with -->
+        <section style="display: flex; flex-direction: column; gap: 16px;">
+          <h2 style="margin: 0; font-family: Sora, sans-serif; font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.02em;">Goes well with</h2>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;">
+            <sc-for list="{{also}}" as="p" hint-placeholder-count="4">
+              <a href="product.html" style="display: flex; flex-direction: column; background: #ffffff; border: 1px solid #dde2e9; border-radius: 12px; overflow: hidden; text-decoration: none; color: #0b0f16;">
+                <div style="aspect-ratio: 1 / 1; background: #eef1f5;"><img src="{{p.img}}" alt="{{p.name}}" style="width: 100%; height: 100%; object-fit: cover; object-position: {{p.pos}}; display: block;"></div>
+                <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-size: 14px; line-height: 20px; color: #4f5968; height: 40px; overflow: hidden;">{{p.name}}</span>
+                  <span style="font-family: Sora, sans-serif; font-size: 18px; line-height: 22px; font-weight: 700;">{{p.price}}</span>
+                </div>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+
+      <!-- Summary -->
+      <aside style="position: sticky; top: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="padding: 24px; background: #ffffff; border: 1px solid #dde2e9; border-radius: 12px; box-shadow: 0 1px 2px rgba(11,15,22,0.06), 0 6px 18px rgba(11,15,22,0.08); display: flex; flex-direction: column; gap: 12px;">
+          <h2 style="margin: 0 0 4px; font-family: Sora, sans-serif; font-size: 20px; line-height: 26px; font-weight: 700; letter-spacing: -0.02em;">Order summary</h2>
+          <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #4f5968;">Subtotal (2 items)</span><span style="font-family: Sora, sans-serif; font-weight: 600;">৳1,458</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #4f5968;">You save</span><span style="font-family: Sora, sans-serif; font-weight: 600; color: #a84a00;">৳142</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #4f5968;">Delivery</span><span style="color: #4f5968;">At checkout</span></div>
+          <div style="height: 1px; background: #dde2e9;"></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 16px; font-weight: 600;">Total</span><span style="font-family: Sora, sans-serif; font-size: 28px; line-height: 32px; font-weight: 700; letter-spacing: -0.02em;">৳1,458</span></div>
+          <a href="checkout.html" style="margin-top: 8px; height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #2563d0; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none;">Checkout</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #e8f0fd; border-radius: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1f5bc4" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
+          <span style="font-size: 14px; line-height: 20px;">Pay cash when your order arrives. No advance payment.</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <footer style="background: #05060a; color: #9aa3b0;">
+    <div style="width: 1200px; margin: 0 auto; padding: 28px 0; display: flex; align-items: center; gap: 32px; font-size: 14px; line-height: 20px;">
+      <img src="../../assets/logos/modz-tech-wordmark.webp" alt="Modz Tech" style="height: 40px; width: auto; display: block;">
+      <span>Online only · Cash on delivery all over Bangladesh</span>
+      <span style="margin-left: auto; display: flex; gap: 20px;"><a href="../mobile/track-order.html" style="color: #eef1f5; text-decoration: none;">Track order</a><a href="../mobile/contact.html" style="color: #eef1f5; text-decoration: none;">Contact us</a><a href="#" style="color: #66aae7; text-decoration: none;">facebook.com/ModzTech</a></span>
+    </div>
+    <div style="border-top: 1px solid #2c3440;"><div style="width: 1200px; margin: 0 auto; padding: 14px 0; font-size: 13px; line-height: 18px;">© 2026 Modz Tech</div></div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      also: [
+        { img: '../../assets/product-posts/post-anker-45w-charger.webp', pos: 'center 78%', name: 'Anker 45W USB-C Fast Charger', price: '৳[price]' },
+        { img: '../../assets/product-posts/post-hoco-e103-tracker.webp', pos: '62% 50%', name: 'Hoco E103 Anti-lost Tracker', price: '৳[price]' },
+        { img: '../../assets/product-posts/post-y80-ultra-watch.webp', pos: 'center 55%', name: 'Y80 Ultra Smart Watch', price: '৳[price]' },
+        { img: '../../assets/product-posts/post-hoco-l22-mic.webp', pos: 'center 72%', name: 'Hoco L22 Dual Wireless Lapel Mic', price: '৳[price]' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

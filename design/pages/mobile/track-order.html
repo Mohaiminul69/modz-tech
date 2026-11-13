@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Track your order</title>
+
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&amp;family=Sora:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#f4f6f9}
+a{color:#1f5bc4}a:hover{color:#2563d0}
+</style>
+</helmet>
+<div style="width: 390px; background: #f4f6f9; color: #0b0f16; font-family: 'Hind Siliguri', system-ui, sans-serif; font-size: 15px; line-height: 24px; display: flex; flex-direction: column;">
+
+  <header style="background: #05060a; display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid #2c3440;">
+    <a href="home.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #d9dade;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <a href="home.html" aria-label="Modz Tech home"><img src="../../assets/logos/modz-tech-wordmark.webp" alt="Modz Tech" style="height: 32px; width: auto; display: block;"></a>
+  </header>
+
+  <section style="padding: 20px 16px 8px; display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font-family: Sora, sans-serif; font-size: 26px; line-height: 32px; font-weight: 700; letter-spacing: -0.02em;">Track your order</h1>
+    <p style="margin: 0; font-size: 15px; line-height: 24px; color: #4f5968;">Enter the order number from your SMS and the phone number you ordered with.</p>
+  </section>
+
+  <section style="margin: 8px 16px 0; padding: 16px; background: #ffffff; border: 1px solid #dde2e9; border-radius: 12px; display: flex; flex-direction: column; gap: 14px;">
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600;">Order number<input type="text" value="MZ-[0000]" style="height: 44px; padding: 0 12px; border: 1px solid #848d9b; border-radius: 8px; font: 600 15px Sora, sans-serif;"></label>
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600;">Phone number
+      <span style="display: flex; height: 44px; border: 1px solid #848d9b; border-radius: 8px; overflow: hidden;"><span style="display: flex; align-items: center; padding: 0 12px; background: #eef1f5; border-right: 1px solid #dde2e9; font: 600 14px Sora, sans-serif;">+880</span><input type="tel" placeholder="1XXXXXXXXX" style="flex: 1; min-width: 0; padding: 0 12px; border: 0; font: 400 15px 'Hind Siliguri', sans-serif;"></span>
+    </label>
+    <button style="height: 48px; border-radius: 8px; border: 0; background: #2563d0; color: #ffffff; font: 600 15px 'Hind Siliguri', sans-serif;">Track order</button>
+  </section>
+
+  <!-- Result -->
+  <section style="margin: 16px 16px 0; padding: 16px; background: #ffffff; border: 1px solid #dde2e9; border-radius: 12px; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 12px; line-height: 16px; color: #4f5968;">Order</span>
+        <span style="font: 700 17px/22px Sora, sans-serif;">#MZ-[0000]</span>
+      </div>
+      <span style="padding: 4px 12px; border-radius: 999px; background: #e8f0fd; color: #1f5bc4; font: 600 12px/16px Sora, sans-serif;">On the way</span>
+    </div>
+    <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+        <li style="display: flex; gap: 12px;">
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <span style="width: 24px; height: 24px; border-radius: 999px; background: {{s.dot}}; border: 2px solid {{s.ring}}; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 13px; line-height: 1;">{{s.mark}}</span>
+            <sc-if value="{{s.line}}" hint-placeholder-val="{{true}}"><span style="width: 2px; height: 40px; background: {{s.lineColor}};"></span></sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; padding-bottom: 12px;">
+            <span style="font-size: 15px; line-height: 22px; font-weight: 600; color: {{s.ink}};">{{s.title}}</span>
+            <span style="font-size: 12px; line-height: 16px; color: #4f5968;">{{s.when}}</span>
+          </div>
+        </li>
+      </sc-for>
+    </ol>
+    <div style="display: flex; gap: 12px; align-items: center; padding-top: 12px; border-top: 1px solid #dde2e9;">
+      <img src="../../assets/product-posts/post-hoco-eq34-plus.webp" alt="Hoco EQ34 Plus" style="width: 48px; height: 48px; object-fit: cover; object-position: center 60%; border-radius: 8px; background: #eef1f5; display: block; flex: none;">
+      <span style="flex: 1; font-size: 14px; line-height: 20px; color: #4f5968;">Hoco EQ34 Plus × 2</span>
+      <span style="display: flex; flex-direction: column; align-items: flex-end;"><span style="font-size: 12px; line-height: 16px; color: #4f5968;">Pay on delivery</span><span style="font: 700 18px/22px Sora, sans-serif;">৳[total]</span></span>
+    </div>
+  </section>
+
+  <p style="margin: 0; padding: 20px 16px 32px; text-align: center; font-size: 14px; line-height: 20px; color: #4f5968;">Can't find your order? <a href="#" style="font-weight: 600; text-decoration: none;">Message us on Facebook</a></p>
+
+  <footer style="background: #05060a; color: #9aa3b0; padding: 24px 16px 20px; display: flex; flex-direction: column; gap: 8px; font-size: 12px; line-height: 16px;">
+    <span>Phone: [YOUR PHONE NUMBER] · <a href="#" style="color: #66aae7; text-decoration: none;">facebook.com/ModzTech</a></span>
+    <span><a href="contact.html" style="color: #66aae7; text-decoration: none;">Contact us</a> · © 2026 Modz Tech</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var done = { dot: '#0f7a4b', ring: '#0f7a4b', mark: '✓', ink: '#0b0f16', line: true, lineColor: '#0f7a4b' };
+    var now = { dot: '#2563d0', ring: '#2563d0', mark: '', ink: '#1f5bc4', line: true, lineColor: '#dde2e9' };
+    var todo = { dot: '#ffffff', ring: '#848d9b', mark: '', ink: '#4f5968', line: true, lineColor: '#dde2e9' };
+    return {
+      steps: [
+        Object.assign({ title: 'Order placed', when: '[date, time]' }, done),
+        Object.assign({ title: 'Confirmed by phone', when: '[date, time]' }, done),
+        Object.assign({ title: 'Shipped', when: 'With [courier] · [date]' }, now),
+        Object.assign({ title: 'Delivered', when: 'Expected [date]' }, todo, { line: false })
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
