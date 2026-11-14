@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hind_Siliguri, Saira, Sora } from "next/font/google";
+import { Clarity } from "@/components/analytics/clarity";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -47,6 +48,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
     <body suppressHydrationWarning className="flex min-h-full flex-col">
       {children}
       <Toaster position="top-center" />
+      <Clarity />
     </body>
   </html>
 );
