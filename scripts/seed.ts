@@ -137,11 +137,12 @@ const products: SeedProduct[] = [
 
 const settings: Omit<SettingsDoc, "createdAt" | "updatedAt"> = {
   key: "site",
-  phone: "[YOUR PHONE NUMBER]",
-  email: "[YOUR EMAIL]",
-  hours: "[10am–10pm]",
-  facebookUrl: "https://facebook.com/ModzTech",
-  messengerUrl: "https://m.me/ModzTech",
+  phone: "+880 1786-503069",
+  email: "modztech.store@gmail.com",
+  hours: "10am–11pm",
+  facebookUrl: "https://www.facebook.com/profile.php?id=61577609936117",
+  messengerUrl: "https://m.me/61577609936117",
+  whatsappUrl: "https://wa.me/8801786503069",
   delivery: { insideDhaka: {}, outsideDhaka: {} },
   heroSlides: [
     {

@@ -49,6 +49,8 @@ export type SettingsDoc = {
   hours: string;
   facebookUrl: string;
   messengerUrl: string;
+  /** e.g. "https://wa.me/8801786503069" */
+  whatsappUrl: string;
   delivery: {
     insideDhaka: DeliveryOption;
     outsideDhaka: DeliveryOption;
@@ -76,6 +78,7 @@ const settingsSchema = new Schema<SettingsDoc>(
     hours: { type: String, default: "" },
     facebookUrl: { type: String, default: "" },
     messengerUrl: { type: String, default: "" },
+    whatsappUrl: { type: String, default: "" },
     delivery: {
       insideDhaka: { type: deliverySchema, default: () => ({}) },
       outsideDhaka: { type: deliverySchema, default: () => ({}) },

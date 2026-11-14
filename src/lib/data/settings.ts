@@ -7,7 +7,9 @@ import { Settings } from "@/models/settings";
 /** Cache tag for shop settings. Call updateTag("settings") after admin edits. */
 export const SETTINGS_TAG = "settings";
 
-const toLabel = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+// "facebook.com/ModzTech" for vanity URLs; numeric profile links get a readable label instead.
+const toLabel = (url: string) =>
+  /profile\.php/i.test(url) ? "Modz Tech on Facebook" : url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 
 export const getSettings = async (): Promise<SiteSettings> => {
   "use cache";
@@ -25,6 +27,7 @@ export const getSettings = async (): Promise<SiteSettings> => {
       facebookUrl: "",
       facebookLabel: "",
       messengerUrl: "",
+      whatsappUrl: "",
       delivery: { insideDhaka: {}, outsideDhaka: {} },
       heroSlides: [],
       promoTiles: [],
@@ -41,6 +44,7 @@ export const getSettings = async (): Promise<SiteSettings> => {
     facebookUrl: doc.facebookUrl,
     facebookLabel: toLabel(doc.facebookUrl),
     messengerUrl: doc.messengerUrl,
+    whatsappUrl: doc.whatsappUrl ?? "",
     delivery: {
       insideDhaka: { fee: doc.delivery?.insideDhaka?.fee, time: doc.delivery?.insideDhaka?.time },
       outsideDhaka: { fee: doc.delivery?.outsideDhaka?.fee, time: doc.delivery?.outsideDhaka?.time },

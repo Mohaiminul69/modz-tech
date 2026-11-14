@@ -1,15 +1,8 @@
 import { type Model, Schema, type Types, model, models } from "mongoose";
 
-export const ORDER_STATUSES = [
-  "pending",
-  "confirmed",
-  "shipped",
-  "delivered",
-  "not_reachable",
-  "cancelled",
-  "returned",
-] as const;
-export type OrderStatus = (typeof ORDER_STATUSES)[number];
+import { ORDER_STATUSES, ORDER_STATUS_LABELS, type OrderStatus } from "../lib/order-status";
+
+export { ORDER_STATUSES, ORDER_STATUS_LABELS, type OrderStatus };
 
 export type OrderItem = {
   product: Types.ObjectId;
@@ -41,6 +34,8 @@ export type OrderDoc = {
   statusHistory: { status: OrderStatus; at: Date; note?: string }[];
   courier?: { name?: string; trackingId?: string; trackingUrl?: string };
   adminNotes?: string;
+  /** Set when an admin puts a cancelled/returned order's items back into stock (only once). */
+  stockRestored?: boolean;
   /** For rate limits and fraud checks. */
   meta: { ip?: string; userAgent?: string };
   createdAt: Date;
@@ -96,6 +91,7 @@ const orderSchema = new Schema<OrderDoc>(
     },
     courier: { name: String, trackingId: String, trackingUrl: String },
     adminNotes: String,
+    stockRestored: { type: Boolean, default: false },
     meta: { ip: { type: String, index: true }, userAgent: String },
   },
   { timestamps: true },

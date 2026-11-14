@@ -1,7 +1,8 @@
 import { type Model, Schema, type Types, model, models } from "mongoose";
+// Relative path so the seed script (run with tsx) resolves it too.
+import { PRODUCT_TAGS, type ProductTag } from "../lib/product-tags";
 
-export const PRODUCT_TAGS = ["exclusive", "top-selling", "new"] as const;
-export type ProductTag = (typeof PRODUCT_TAGS)[number];
+export { PRODUCT_TAGS, type ProductTag };
 
 export type ProductImage = {
   /** Cloudinary URL, or a /public path for seed data. */

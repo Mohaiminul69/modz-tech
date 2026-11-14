@@ -110,6 +110,7 @@ export type SiteSettings = {
   /** facebookUrl without the protocol, for display: "facebook.com/ModzTech". */
   facebookLabel: string;
   messengerUrl: string;
+  whatsappUrl: string;
   delivery: {
     insideDhaka: { fee?: number; time?: string };
     outsideDhaka: { fee?: number; time?: string };
