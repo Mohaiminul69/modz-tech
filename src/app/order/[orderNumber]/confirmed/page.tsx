@@ -126,7 +126,7 @@ const Confirmation = async ({ params, searchParams }: PageProps<"/order/[orderNu
       </div>
 
       <section className="flex flex-col gap-2 px-4 pt-5">
-        <Link href="/track" className={cn(buttonVariants(), "h-12")}>
+        <Link href={`/track?order=${order.orderNumber}`} className={cn(buttonVariants(), "h-12")}>
           Track your order
         </Link>
         <Link href="/shop" className={cn(buttonVariants({ variant: "outline" }), "h-12")}>
