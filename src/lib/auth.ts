@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { MongoClient } from "mongodb";
+import { type Db, MongoClient } from "mongodb";
 import { MIN_PASSWORD_LENGTH } from "./auth-rules";
 import { emailToPhone, isPhoneEmail } from "./phone-account";
 
@@ -14,14 +14,47 @@ import { emailToPhone, isPhoneEmail } from "./phone-account";
  * Users get a `role` ("customer" by default); admin is granted with scripts/make-admin.ts.
  */
 
-const globalForAuth = globalThis as typeof globalThis & { authMongoClient?: MongoClient };
-
 const uri = process.env.MONGODB_URI;
 if (!uri) throw new Error("MONGODB_URI is not set. Add it to .env.local (see .env.example).");
 
-// One client per server instance (same pattern as the Mongoose connection).
-const client = globalForAuth.authMongoClient ?? new MongoClient(uri);
-globalForAuth.authMongoClient = client;
+/*
+ * Self-healing MongoDB client for Better Auth.
+ *
+ * A MongoClient whose connection fails once (e.g. an Atlas blip or a slow cold
+ * start on Vercel) stays closed for good ("MongoTopologyClosedError: Topology is
+ * closed"), which broke every sign-in until the next deploy. So: if connecting
+ * fails or the client closes, it's dropped and the next request makes a new one.
+ * Better Auth gets a Db proxy that always points at the current healthy client.
+ */
+type Holder = { client: MongoClient; db: Db };
+const globalForAuth = globalThis as typeof globalThis & { authMongo?: Holder | null };
+
+const createClient = (): Holder => {
+  const client = new MongoClient(uri);
+  const holder: Holder = { client, db: client.db() };
+  const drop = () => {
+    if (globalForAuth.authMongo === holder) globalForAuth.authMongo = null;
+  };
+  client.on("topologyClosed", drop);
+  client.connect().catch((error: unknown) => {
+    console.error("[auth] MongoDB connection failed; a new client is used on the next request", error);
+    drop();
+    void client.close().catch(() => undefined);
+  });
+  globalForAuth.authMongo = holder;
+  return holder;
+};
+
+const currentDb = () => (globalForAuth.authMongo ?? createClient()).db;
+
+// Forwards every call (db.collection(...), etc.) to the current client's database.
+const db = new Proxy({} as Db, {
+  get: (_target, property) => {
+    const target = currentDb();
+    const value = Reflect.get(target, property, target);
+    return typeof value === "function" ? value.bind(target) : value;
+  },
+});
 
 export const googleConfigured = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
 
@@ -30,7 +63,8 @@ const PASSWORD_PATHS = new Set(["/sign-up/email", "/sign-in/email"]);
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
-  database: mongodbAdapter(client.db(), { client }),
+  // No `client` (and so no multi-document transactions): the client can be replaced at runtime.
+  database: mongodbAdapter(db, { transaction: false }),
   emailAndPassword: {
     enabled: true,
     minPasswordLength: MIN_PASSWORD_LENGTH,
