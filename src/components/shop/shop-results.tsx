@@ -16,7 +16,7 @@ import {
   parseFilters,
 } from "@/lib/shop-filters";
 import { cn } from "@/lib/utils";
-import { FilterSheet, FilterSidebar } from "./filter-panel";
+import { FilterSheet, FilterSidebar, type PriceBounds } from "./filter-panel";
 import { SortSelect } from "./sort-select";
 
 type ShopResultsProps = {
@@ -92,6 +92,16 @@ export const ShopResults = async ({ searchParams, fixedCategory }: ShopResultsPr
   }));
   const brandOptions = brands.map((brand) => ({ slug: brand.slug, name: brand.name }));
 
+  // Price slider range: cheapest to most expensive product, rounded to a friendly step.
+  const prices = items.map((item) => item.card.price);
+  const highest = prices.length > 0 ? Math.max(...prices) : 0;
+  const step = highest > 5000 ? 100 : highest > 1000 ? 50 : 10;
+  const priceBounds: PriceBounds = {
+    min: prices.length > 0 ? Math.floor(Math.min(...prices) / step) * step : 0,
+    max: Math.ceil(highest / step) * step,
+    step,
+  };
+
   // Phones show everything up to this page ("Load more"); desktop shows only this page.
   const shown = results.slice(0, page * PAGE_SIZE);
   const firstOnPage = (page - 1) * PAGE_SIZE;
@@ -158,6 +168,7 @@ export const ShopResults = async ({ searchParams, fixedCategory }: ShopResultsPr
           filters={current}
           categories={categoryOptions}
           brands={brandOptions}
+          priceBounds={priceBounds}
           activeCount={countActiveFilters(current)}
         />
         <SortSelect filters={current} variant="bar" />
@@ -166,7 +177,7 @@ export const ShopResults = async ({ searchParams, fixedCategory }: ShopResultsPr
 
       <div className="lg:grid lg:grid-cols-[264px_minmax(0,1fr)] lg:items-start lg:gap-8">
         <div className="hidden lg:block lg:self-stretch">
-          <FilterSidebar filters={current} categories={categoryOptions} brands={brandOptions} />
+          <FilterSidebar filters={current} categories={categoryOptions} brands={brandOptions} priceBounds={priceBounds} />
         </div>
 
         <div className="flex flex-col gap-4">

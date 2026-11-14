@@ -39,3 +39,21 @@ export const ShopPage = ({ title, breadcrumbs, searchParams, category }: ShopPag
     <BottomNav current="categories" />
   </>
 );
+
+/** Shown while a page that isn't prerendered (e.g. a new category) works out its title. */
+export const ShopPageSkeleton = () => (
+  <>
+    <SiteHeader leading="back" backHref="/" actions={["cart"]} showSearch />
+    <main aria-busy="true" className="flex flex-1 flex-col">
+      <div className="mx-auto flex w-full max-w-content flex-col lg:gap-6 lg:px-4 lg:pt-6 lg:pb-16 xl:px-0">
+        <div className="flex flex-col gap-2 px-4 pt-4 lg:px-0 lg:pt-0">
+          <div className="h-4 w-40 animate-pulse rounded-sm bg-media-frame" />
+          <div className="h-8 w-56 animate-pulse rounded-sm bg-media-frame" />
+        </div>
+        <ShopResultsSkeleton />
+      </div>
+    </main>
+    <SiteFooter variant="compact" />
+    <BottomNav current="categories" />
+  </>
+);

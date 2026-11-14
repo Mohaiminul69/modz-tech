@@ -5,17 +5,22 @@ import { useRouter } from "next/navigation";
 import { useId, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Slider } from "@/components/ui/slider";
+import { formatPrice } from "@/lib/format";
 import { OTHER_BRAND, type ShopFilters, buildShopHref } from "@/lib/shop-filters";
 import { cn } from "@/lib/utils";
 
 type Option = { slug: string; name: string; count?: number };
 
+/** Cheapest/most expensive product price (rounded to `step`), for the price slider. */
+export type PriceBounds = { min: number; max: number; step: number };
+
 type FilterPanelProps = {
   filters: ShopFilters;
   categories: Option[];
   brands: Option[];
+  priceBounds: PriceBounds;
 };
 
 type FieldsProps = FilterPanelProps & {
@@ -50,83 +55,64 @@ const CheckRow = ({
   </div>
 );
 
-const parsePrice = (value: string) => {
-  const number = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
-  return Number.isFinite(number) ? number : undefined;
-};
-
 /*
- * Min/max price inputs.
- * Sidebar: typed into local state, applied on Enter or when the field loses focus.
- * Sheet: written straight into the draft (applied with "Show results").
+ * Price range slider (shadcn Slider, two thumbs) between the cheapest and most
+ * expensive product. A thumb at either end means "no limit" on that side.
+ * Sidebar: applies when a thumb is released. Sheet: updates the draft (applied with "Show results").
  */
-const PriceFields = ({ filters, onChange, layout }: Pick<FieldsProps, "filters" | "onChange" | "layout">) => {
-  const id = useId();
-  const sheet = layout === "sheet";
-  const [localMin, setLocalMin] = useState(filters.min?.toString() ?? "");
-  const [localMax, setLocalMax] = useState(filters.max?.toString() ?? "");
-  const min = sheet ? (filters.min?.toString() ?? "") : localMin;
-  const max = sheet ? (filters.max?.toString() ?? "") : localMax;
+const PriceSlider = ({
+  filters,
+  onChange,
+  layout,
+  bounds,
+}: Pick<FieldsProps, "filters" | "onChange" | "layout"> & { bounds: PriceBounds }) => {
+  const clamp = (value: number) => Math.min(bounds.max, Math.max(bounds.min, value));
+  const [range, setRange] = useState<[number, number]>([
+    clamp(filters.min ?? bounds.min),
+    clamp(filters.max ?? bounds.max),
+  ]);
 
-  const commit = () => {
-    let low = parsePrice(localMin);
-    let high = parsePrice(localMax);
-    if (low !== undefined && high !== undefined && low > high) [low, high] = [high, low];
-    if (low !== filters.min || high !== filters.max) onChange({ ...filters, min: low, max: high });
-  };
+  const toFilters = ([low, high]: number[]): ShopFilters => ({
+    ...filters,
+    min: low <= bounds.min ? undefined : low,
+    max: high >= bounds.max ? undefined : high,
+  });
 
-  const inputClass = "font-heading font-semibold lg:h-10 lg:px-2.5 lg:text-label";
+  if (bounds.max <= bounds.min) {
+    return <p className="text-label text-ink-muted">All products are {formatPrice(bounds.min)}.</p>;
+  }
 
   return (
-    <form
-      className="flex items-end gap-2"
-      onSubmit={(event) => {
-        event.preventDefault();
-        if (!sheet) commit();
-      }}
-    >
-      <label htmlFor={`${id}-min`} className="flex flex-1 flex-col gap-1 text-small text-ink-muted">
-        <span className={layout === "sidebar" ? "sr-only" : undefined}>Min (৳)</span>
-        <Input
-          id={`${id}-min`}
-          inputMode="numeric"
-          placeholder="0"
-          value={min}
-          onChange={(event) =>
-            sheet ? onChange({ ...filters, min: parsePrice(event.target.value) }) : setLocalMin(event.target.value)
-          }
-          onBlur={() => !sheet && commit()}
-          className={inputClass}
-          aria-label={layout === "sidebar" ? "Minimum price" : undefined}
-        />
-      </label>
-      <span aria-hidden="true" className="pb-2.5 text-ink-muted">
-        –
-      </span>
-      <label htmlFor={`${id}-max`} className="flex flex-1 flex-col gap-1 text-small text-ink-muted">
-        <span className={layout === "sidebar" ? "sr-only" : undefined}>Max (৳)</span>
-        <Input
-          id={`${id}-max`}
-          inputMode="numeric"
-          placeholder="Any"
-          value={max}
-          onChange={(event) =>
-            sheet ? onChange({ ...filters, max: parsePrice(event.target.value) }) : setLocalMax(event.target.value)
-          }
-          onBlur={() => !sheet && commit()}
-          className={inputClass}
-          aria-label={layout === "sidebar" ? "Maximum price" : undefined}
-        />
-      </label>
-      {/* Lets Enter submit the form */}
-      <button type="submit" className="sr-only">
-        Apply price
-      </button>
-    </form>
+    <div className="flex flex-col gap-1">
+      <p aria-live="polite" className="flex justify-between font-heading text-label font-semibold text-ink">
+        <span>{formatPrice(range[0])}</span>
+        <span>
+          {formatPrice(range[1])}
+          {range[1] >= bounds.max ? "+" : ""}
+        </span>
+      </p>
+      <Slider
+        min={bounds.min}
+        max={bounds.max}
+        step={bounds.step}
+        minStepsBetweenThumbs={1}
+        value={range}
+        thumbLabels={["Minimum price", "Maximum price"]}
+        onValueChange={(value) => {
+          setRange([value[0], value[1]]);
+          if (layout === "sheet") onChange(toFilters(value));
+        }}
+        onValueCommit={(value) => {
+          if (layout !== "sidebar") return;
+          const next = toFilters(value);
+          if (next.min !== filters.min || next.max !== filters.max) onChange(next);
+        }}
+      />
+    </div>
   );
 };
 
-const FilterFields = ({ filters, categories, brands, layout, onChange }: FieldsProps) => {
+const FilterFields = ({ filters, categories, brands, priceBounds, layout, onChange }: FieldsProps) => {
   const id = useId();
   const sidebar = layout === "sidebar";
   const fieldsetClass = cn("flex flex-col", sidebar ? "gap-0.5 border-b border-border pb-4" : "gap-1");
@@ -172,13 +158,14 @@ const FilterFields = ({ filters, categories, brands, layout, onChange }: FieldsP
       </fieldset>
 
       <fieldset className={cn(fieldsetClass, "gap-2")}>
-        <legend className={legendClass}>{sidebar ? "Price (৳)" : "Price"}</legend>
-        <PriceFields
-          // Sidebar: reset the typed values when the URL's price range changes (e.g. "Clear all").
-          key={layout === "sidebar" ? `${filters.min}-${filters.max}` : "sheet"}
+        <legend className={legendClass}>Price</legend>
+        <PriceSlider
+          // Reset the thumbs when the price range changes from outside (e.g. "Clear all", "Reset").
+          key={`${filters.min}-${filters.max}`}
           filters={filters}
           onChange={onChange}
           layout={layout}
+          bounds={priceBounds}
         />
       </fieldset>
 
@@ -227,7 +214,7 @@ const cleared = (filters: ShopFilters): ShopFilters => ({
 });
 
 /** Desktop: sticky sidebar, every change applies straight away. */
-export const FilterSidebar = ({ filters, categories, brands }: FilterPanelProps) => {
+export const FilterSidebar = ({ filters, categories, brands, priceBounds }: FilterPanelProps) => {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -253,13 +240,19 @@ export const FilterSidebar = ({ filters, categories, brands }: FilterPanelProps)
           Clear all
         </button>
       </div>
-      <FilterFields filters={filters} categories={categories} brands={brands} layout="sidebar" onChange={apply} />
+      <FilterFields filters={filters} categories={categories} brands={brands} priceBounds={priceBounds} layout="sidebar" onChange={apply} />
     </aside>
   );
 };
 
 /** Phones: bottom sheet; changes apply when "Show results" is tapped. */
-export const FilterSheet = ({ filters, categories, brands, activeCount }: FilterPanelProps & { activeCount: number }) => {
+export const FilterSheet = ({
+  filters,
+  categories,
+  brands,
+  priceBounds,
+  activeCount,
+}: FilterPanelProps & { activeCount: number }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(filters);
@@ -294,7 +287,14 @@ export const FilterSheet = ({ filters, categories, brands, activeCount }: Filter
           </SheetClose>
         </div>
         <div className="flex flex-1 flex-col gap-5 overflow-y-auto p-4">
-          <FilterFields filters={draft} categories={categories} brands={brands} layout="sheet" onChange={setDraft} />
+          <FilterFields
+            filters={draft}
+            categories={categories}
+            brands={brands}
+            priceBounds={priceBounds}
+            layout="sheet"
+            onChange={setDraft}
+          />
         </div>
         <div className="grid grid-cols-[1fr_2fr] gap-2 border-t border-border px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">
           <Button variant="outline" className="h-12" onClick={() => setDraft(cleared(draft))}>

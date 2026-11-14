@@ -46,7 +46,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
   >
     <body suppressHydrationWarning className="flex min-h-full flex-col">
       {children}
-      <Toaster />
+      <Toaster position="top-center" />
     </body>
   </html>
 );

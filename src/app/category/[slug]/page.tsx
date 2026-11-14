@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ShopPage } from "@/components/shop/shop-page";
+import { Suspense } from "react";
+import { ShopPage, ShopPageSkeleton } from "@/components/shop/shop-page";
 import { getCategories } from "@/lib/data/catalog";
 
 // Prerender every category at build time (Cache Components needs at least one).
@@ -20,7 +21,11 @@ export const generateMetadata = async ({ params }: PageProps<"/category/[slug]">
   };
 };
 
-const CategoryRoute = async ({ params, searchParams }: PageProps<"/category/[slug]">) => {
+type CategoryRouteProps = PageProps<"/category/[slug]">;
+
+// Reads the slug from the URL, so it sits inside <Suspense>: a click on a category that wasn't
+// prerendered shows the skeleton straight away.
+const CategoryContent = async ({ params, searchParams }: CategoryRouteProps) => {
   const { slug } = await params;
   const category = (await getCategories()).find((item) => item.slug === slug);
   if (!category) notFound();
@@ -34,5 +39,11 @@ const CategoryRoute = async ({ params, searchParams }: PageProps<"/category/[slu
     />
   );
 };
+
+const CategoryRoute = ({ params, searchParams }: CategoryRouteProps) => (
+  <Suspense fallback={<ShopPageSkeleton />}>
+    <CategoryContent params={params} searchParams={searchParams} />
+  </Suspense>
+);
 
 export default CategoryRoute;

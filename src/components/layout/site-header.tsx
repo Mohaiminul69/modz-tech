@@ -3,6 +3,7 @@ import { ChevronLeft, Search, Truck } from "lucide-react";
 import { getCategories } from "@/lib/data/catalog";
 import { cn } from "@/lib/utils";
 import { AccountLink } from "./account-link";
+import { AdminLink } from "./admin-link";
 import { CartLink } from "./cart-link";
 import { Logo } from "./logo";
 import { MobileMenu } from "./mobile-menu";
@@ -74,6 +75,7 @@ export const SiteHeader = async ({
           )}
           <Logo eager className={leading === "menu" ? "h-8.5" : "h-8"} />
           <div className="ml-auto flex">
+            <AdminLink variant="icon" />
             {actions.map((action) => {
               if (action === "search") {
                 return (
@@ -98,6 +100,7 @@ export const SiteHeader = async ({
           <Logo eager className="h-11" />
           <SearchForm variant="wide" defaultValue={searchQuery} className="mx-auto max-w-155 flex-1" />
           <nav aria-label="Account" className="flex items-center gap-1">
+            <AdminLink variant="text" />
             <Link
               href="/track"
               aria-current={current === "track" ? "page" : undefined}
