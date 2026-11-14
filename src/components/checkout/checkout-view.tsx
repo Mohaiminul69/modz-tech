@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useId, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { placeOrder } from "@/app/checkout/actions";
+import { signInWithGoogle } from "@/components/auth/auth-form";
 import { GoogleButton } from "@/components/auth/google-button";
 import { PhoneInput } from "@/components/forms/phone-input";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
@@ -31,9 +32,20 @@ import { formatPrice } from "@/lib/format";
 import type { SiteSettings } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+/** Saved details of a signed-in customer (prefill), or null for guests. */
+export type CheckoutUser = {
+  name: string;
+  phone: string;
+  email: string;
+  area: DeliveryArea | null;
+  district: string;
+  address: string;
+} | null;
+
 type CheckoutViewProps = {
   delivery: SiteSettings["delivery"];
   phone: string;
+  user: CheckoutUser;
 };
 
 const cardClass = "flex flex-col rounded-lg border border-border bg-surface p-4 lg:p-6";
@@ -61,16 +73,13 @@ const FieldError = ({ id, message }: { id: string; message?: string }) =>
     </span>
   ) : null;
 
-const accountsSoon = () =>
-  toast.info("Accounts open very soon.", { description: "You can order as a guest. Just fill in the form." });
-
-export const CheckoutView = ({ delivery, phone: shopPhone }: CheckoutViewProps) => {
+export const CheckoutView = ({ delivery, phone: shopPhone, user }: CheckoutViewProps) => {
   const id = useId();
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const { items, rows, refresh } = useCartLines();
-  const [area, setArea] = useState<DeliveryArea>("inside");
-  const [district, setDistrict] = useState("");
+  const [area, setArea] = useState<DeliveryArea>(user?.area ?? "inside");
+  const [district, setDistrict] = useState(user?.area === "outside" ? user.district : "");
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -181,18 +190,25 @@ export const CheckoutView = ({ delivery, phone: shopPhone }: CheckoutViewProps) 
       <div className="flex flex-col gap-1 px-4 pt-4 pb-1 lg:gap-1.5 lg:px-0 lg:pt-0 lg:pb-6">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Cart", href: "/cart" }, { label: "Checkout" }]} />
         <h1 className="mt-1 text-page-title text-ink lg:mt-0 lg:text-page-title-lg">Checkout</h1>
-        <div className="flex flex-col gap-1.5 lg:flex-row lg:flex-wrap lg:items-center lg:gap-4">
+        {user ? (
           <p className="text-label text-ink-muted">
-            No account needed. <span className="lg:hidden">Just fill in the form below.</span>
-            <span className="hidden lg:inline">Optional: sign in with Google to save your address.</span>
+            Signed in as <span className="font-semibold text-ink">{user.name}</span>. Your details are filled in and
+            saved for next time.
           </p>
-          <div className="mt-2 flex flex-col gap-1.5 rounded-lg border border-border bg-surface p-3 lg:mt-0 lg:border-0 lg:bg-transparent lg:p-0">
-            <GoogleButton onClick={accountsSoon} />
-            <span className="text-center text-small text-ink-muted lg:hidden">
-              Optional: sign in with Google to save your address.
-            </span>
+        ) : (
+          <div className="flex flex-col gap-1.5 lg:flex-row lg:flex-wrap lg:items-center lg:gap-4">
+            <p className="text-label text-ink-muted">
+              No account needed. <span className="lg:hidden">Just fill in the form below.</span>
+              <span className="hidden lg:inline">Optional: sign in with Google to save your address.</span>
+            </p>
+            <div className="mt-2 flex flex-col gap-1.5 rounded-lg border border-border bg-surface p-3 lg:mt-0 lg:border-0 lg:bg-transparent lg:p-0">
+              <GoogleButton onClick={() => void signInWithGoogle("/checkout")} />
+              <span className="text-center text-small text-ink-muted lg:hidden">
+                Optional: sign in with Google to save your address.
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <form ref={formRef} id="checkout-form" noValidate onSubmit={handleSubmit}>
@@ -234,6 +250,7 @@ export const CheckoutView = ({ delivery, phone: shopPhone }: CheckoutViewProps) 
                   <Input
                     id={fieldId("name")}
                     name="name"
+                    defaultValue={user?.name}
                     autoComplete="name"
                     placeholder="Your name"
                     aria-invalid={errors.name ? true : undefined}
@@ -248,6 +265,7 @@ export const CheckoutView = ({ delivery, phone: shopPhone }: CheckoutViewProps) 
                   <PhoneInput
                     id={fieldId("phone")}
                     name="phone"
+                    defaultValue={user?.phone}
                     invalid={Boolean(errors.phone)}
                     aria-describedby={describedBy("phone", `${id}-phone-hint`)}
                   />
@@ -268,6 +286,7 @@ export const CheckoutView = ({ delivery, phone: shopPhone }: CheckoutViewProps) 
                 <Input
                   id={fieldId("email")}
                   name="email"
+                    defaultValue={user?.email}
                   type="email"
                   autoComplete="email"
                   inputMode="email"
@@ -339,6 +358,7 @@ export const CheckoutView = ({ delivery, phone: shopPhone }: CheckoutViewProps) 
                   <Textarea
                     id={fieldId("address")}
                     name="address"
+                    defaultValue={user?.address}
                     rows={3}
                     autoComplete="street-address"
                     placeholder="House, road, area, landmark"

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ChevronLeft, Search, Truck, User } from "lucide-react";
+import { ChevronLeft, Search, Truck } from "lucide-react";
 import { getCategories } from "@/lib/data/catalog";
 import { cn } from "@/lib/utils";
+import { AccountLink } from "./account-link";
 import { CartLink } from "./cart-link";
 import { Logo } from "./logo";
 import { MobileMenu } from "./mobile-menu";
@@ -82,11 +83,7 @@ export const SiteHeader = async ({
                 );
               }
               if (action === "account") {
-                return (
-                  <Link key={action} href="/login" aria-label="Account" className={iconLinkClass}>
-                    <User aria-hidden="true" strokeWidth={1.5} className="size-5.5" />
-                  </Link>
-                );
+                return <AccountLink key={action} variant="icon" current={current === "login"} />;
               }
               return <CartLink key={action} variant="icon" current={current === "cart"} />;
             })}
@@ -109,14 +106,7 @@ export const SiteHeader = async ({
               <Truck aria-hidden="true" strokeWidth={1.5} className="size-5" />
               Track order
             </Link>
-            <Link
-              href="/login"
-              aria-current={current === "login" ? "page" : undefined}
-              className={accountLinkClass(current === "login")}
-            >
-              <User aria-hidden="true" strokeWidth={1.5} className="size-5" />
-              Log in
-            </Link>
+            <AccountLink variant="text" current={current === "login"} />
             <CartLink variant="text" current={current === "cart"} />
           </nav>
         </div>

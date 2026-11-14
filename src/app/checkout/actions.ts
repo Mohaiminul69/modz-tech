@@ -3,6 +3,9 @@
 import { randomBytes } from "node:crypto";
 import { updateTag } from "next/cache";
 import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+import { saveDeliveryDetails } from "@/lib/account";
+import { isPhoneEmail } from "@/lib/phone-account";
 import { type FieldErrors, checkoutSchema, toFieldErrors } from "@/lib/checkout-schema";
 import { connectDB } from "@/lib/db";
 import { PRODUCTS_TAG } from "@/lib/data/products";
@@ -121,6 +124,8 @@ export const placeOrder = async (input: unknown): Promise<PlaceOrderResult> => {
   }
 
   const settings = await getSettings();
+  // Signed in (optional): link the order and remember the delivery details for next time.
+  const session = await auth.api.getSession({ headers: headerList }).catch(() => null);
   const fee = settings.delivery[data.area === "inside" ? "insideDhaka" : "outsideDhaka"].fee;
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryFee = fee ?? null;
@@ -133,6 +138,7 @@ export const placeOrder = async (input: unknown): Promise<PlaceOrderResult> => {
     await Order.create({
       orderNumber,
       accessKey,
+      userId: session?.user.id,
       customer: { name: data.name, phone: data.phone, email: data.email },
       delivery: { area: data.area, district: data.district, address: data.address, note: data.note },
       items,
@@ -147,6 +153,17 @@ export const placeOrder = async (input: unknown): Promise<PlaceOrderResult> => {
 
     // Stock and "best selling" changed: refresh cached product data.
     updateTag(PRODUCTS_TAG);
+
+    if (session) {
+      // "Sign in to save your address": prefilled at the next checkout. Failure here must not fail the order.
+      await saveDeliveryDetails(session.user.id, {
+        // Phone accounts sign in with their number, so it isn't overwritten by a different checkout phone.
+        phone: isPhoneEmail(session.user.email) ? undefined : data.phone,
+        deliveryArea: data.area,
+        deliveryDistrict: data.district,
+        deliveryAddress: data.address,
+      }).catch((error) => console.error("saving delivery details failed", error));
+    }
 
     // TODO(integrations stage): Telegram alert to the admin, confirmation email when `email` is set.
 

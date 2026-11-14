@@ -1,21 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { useEffect, useId, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { PasswordInput } from "@/components/forms/password-input";
 import { PhoneInput } from "@/components/forms/phone-input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { authClient, authErrorMessage, nextPath } from "@/lib/auth-client";
+import { MIN_PASSWORD_LENGTH } from "@/lib/auth-rules";
 import { PHONE_ERROR, normalizeBdPhone } from "@/lib/phone";
+import { phoneToEmail } from "@/lib/phone-account";
 import { cn } from "@/lib/utils";
 import { GoogleButton } from "./google-button";
 
 type Mode = "login" | "signup";
 type Errors = Partial<Record<"name" | "phone" | "password" | "terms", string>>;
-
-export const MIN_PASSWORD_LENGTH = 8;
 
 const Divider = ({ children }: { children: React.ReactNode }) => (
   <div className="flex items-center gap-3 text-small text-ink-muted">
@@ -32,19 +35,29 @@ const FieldError = ({ id, message }: { id: string; message?: string }) =>
     </span>
   ) : null;
 
-/*
- * TODO(auth stage): sign in / sign up with Better Auth (Google + phone & password).
- * Until accounts exist, valid submissions explain that ordering works as a guest.
- */
-const accountsSoon = () =>
-  toast.info("Accounts open very soon.", {
-    description: "You don't need an account to order. Continue as a guest.",
-  });
+/** Starts Google sign-in; comes back to `?next=` (or the account page). */
+export const signInWithGoogle = async (fallback = "/account") => {
+  const { error } = await authClient.signIn.social({ provider: "google", callbackURL: nextPath(fallback) });
+  if (error) toast.error(authErrorMessage(error));
+};
 
+/*
+ * Phone + password (no SMS verification yet) and Google sign-in.
+ * See src/lib/phone-account.ts for how phone accounts work.
+ */
 export const AuthForm = ({ mode }: { mode: Mode }) => {
   const id = useId();
+  const router = useRouter();
   const signup = mode === "signup";
   const [errors, setErrors] = useState<Errors>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [submitting, startSubmitting] = useTransition();
+  const { data: session } = authClient.useSession();
+
+  // Already signed in: skip the form.
+  useEffect(() => {
+    if (session) router.replace(nextPath("/account"));
+  }, [session, router]);
 
   const validate = (data: FormData): Errors => {
     const next: Errors = {};
@@ -62,14 +75,32 @@ export const AuthForm = ({ mode }: { mode: Mode }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const next = validate(new FormData(event.currentTarget));
+    if (submitting) return;
+    setFormError(null);
+    const data = new FormData(event.currentTarget);
+    const next = validate(data);
     setErrors(next);
     const firstInvalid = Object.keys(next)[0];
     if (firstInvalid) {
       event.currentTarget.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)?.focus();
       return;
     }
-    accountsSoon();
+
+    const email = phoneToEmail(String(data.get("phone") ?? "")) as string;
+    const password = String(data.get("password") ?? "");
+
+    startSubmitting(async () => {
+      const { error } = signup
+        ? await authClient.signUp.email({ email, password, name: String(data.get("name") ?? "").trim() })
+        : await authClient.signIn.email({ email, password, rememberMe: data.get("remember") === "on" });
+      if (error) {
+        setFormError(authErrorMessage(error));
+        return;
+      }
+      toast.success(signup ? "Account created. Welcome!" : "Welcome back.");
+      router.replace(nextPath("/account"));
+      router.refresh();
+    });
   };
 
   const labelClass = "flex flex-col gap-1.5 text-label font-semibold text-ink";
@@ -83,10 +114,15 @@ export const AuthForm = ({ mode }: { mode: Mode }) => {
         </p>
       </div>
 
-      <GoogleButton onClick={accountsSoon} />
+      <GoogleButton onClick={() => void signInWithGoogle()} />
       <Divider>{signup ? "or sign up with your phone" : "or use your phone"}</Divider>
 
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {formError && (
+          <p role="alert" className="rounded-md border border-danger/40 p-3 text-label text-ink">
+            {formError}
+          </p>
+        )}
         {signup && (
           <div className={labelClass}>
             <label htmlFor={`${id}-name`}>Full name</label>
@@ -168,7 +204,8 @@ export const AuthForm = ({ mode }: { mode: Mode }) => {
           </div>
         )}
 
-        <Button type="submit" className="h-12">
+        <Button type="submit" className="h-12" disabled={submitting}>
+          {submitting && <Loader2 aria-hidden="true" className="animate-spin" />}
           {signup ? "Create account" : "Log in"}
         </Button>
       </form>

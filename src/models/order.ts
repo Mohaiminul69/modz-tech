@@ -22,6 +22,8 @@ export type OrderDoc = {
   orderNumber: string;
   /** Secret for the order-confirmed link (order numbers are guessable). */
   accessKey: string;
+  /** Better Auth user id when the customer was signed in (guest orders: unset). */
+  userId?: string;
   customer: { name: string; phone: string; email?: string };
   delivery: { area: "inside" | "outside"; district: string; address: string; note?: string };
   items: OrderItem[];
@@ -60,6 +62,7 @@ const orderSchema = new Schema<OrderDoc>(
   {
     orderNumber: { type: String, required: true, unique: true },
     accessKey: { type: String, required: true, select: false },
+    userId: { type: String, index: true },
     customer: {
       name: { type: String, required: true, trim: true },
       phone: { type: String, required: true, index: true },
