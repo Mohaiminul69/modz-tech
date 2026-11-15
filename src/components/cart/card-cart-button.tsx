@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { buttonVariants } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart/store";
+import { trackPixel } from "@/lib/pixel";
 import type { CardProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +41,14 @@ export const CardCartButton = ({ product, cta, className }: CardCartButtonProps)
       className={classes}
       onClick={() => {
         addToCart({ productId: product.id, variantId: product.variantId, slug: product.slug });
+        trackPixel("AddToCart", {
+          value: product.price,
+          currency: "BDT",
+          content_ids: [product.id],
+          content_name: product.name,
+          content_type: "product",
+          num_items: 1,
+        });
         if (cta === "order") {
           router.push("/checkout");
           return;

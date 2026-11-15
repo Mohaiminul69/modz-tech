@@ -7,6 +7,7 @@ import { useId, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart/store";
+import { trackPixel } from "@/lib/pixel";
 import { formatPrice } from "@/lib/format";
 import { effectivePrice } from "@/lib/pricing";
 import type { ProductDetail, ProductDetailImage } from "@/lib/types";
@@ -55,8 +56,17 @@ export const ProductView = ({ product, offerEndsLabel, messengerUrl }: ProductVi
     setQuantity((current) => Math.min(current, Math.max(1, Math.min(next?.stock ?? 1, MAX_QUANTITY))));
   };
 
-  const add = () =>
+  const add = () => {
     addToCart({ productId: product.id, variantId: variant.id, slug: product.slug }, quantity, variant.stock);
+    trackPixel("AddToCart", {
+      value: price * quantity,
+      currency: "BDT",
+      content_ids: [product.id],
+      content_name: product.name,
+      content_type: "product",
+      num_items: quantity,
+    });
+  };
 
   const addAndStay = () => {
     add();

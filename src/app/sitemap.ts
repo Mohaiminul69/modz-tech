@@ -23,6 +23,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     })),
     { url: `${SITE_URL}/contact`, changeFrequency: "monthly", priority: 0.4 },
     { url: `${SITE_URL}/track`, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${SITE_URL}/policy`, changeFrequency: "yearly", priority: 0.3 },
   ];
 };
 

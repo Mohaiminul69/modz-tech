@@ -25,10 +25,11 @@ type VariantProps = {
   settings: Pick<SiteSettings, "phone" | "facebookUrl" | "facebookLabel">;
 };
 
-// Policy pages are out of scope for launch; these links 404 until they exist.
+// Sections of the one policy page (/policy).
 const policyLinks = [
-  { href: "/delivery-policy", label: "Delivery policy" },
-  { href: "/return-policy", label: "Return policy" },
+  { href: "/policy#delivery", label: "Delivery policy" },
+  { href: "/policy#returns", label: "Return policy" },
+  { href: "/policy#privacy", label: "Privacy policy" },
 ];
 
 const helpLinks = [
@@ -64,6 +65,9 @@ const DesktopRow = ({ settings }: Pick<VariantProps, "settings">) => (
     <span className="ml-auto flex gap-5">
       <Link href="/track" className={linkLight}>
         Track order
+      </Link>
+      <Link href="/policy" className={linkLight}>
+        Policy
       </Link>
       <Link href="/contact" className={linkLight}>
         Contact us
@@ -181,6 +185,10 @@ const MinimalFooter = ({ year, settings }: VariantProps) => (
       <span>
         <Link href="/contact" className={linkAccent}>
           Contact us
+        </Link>
+        {" · "}
+        <Link href="/policy" className={linkAccent}>
+          Policy
         </Link>{" "}
         · © {year} Modz Tech
       </span>

@@ -154,10 +154,10 @@ const ContactRoute = async () => {
             <h2 id="help-title" className="text-panel-title text-ink">
               Quick help
             </h2>
-            {/* Delivery and return policy pages are out of scope for launch; added here when they exist. */}
             <nav aria-labelledby="help-title" className="overflow-hidden rounded-lg border border-border bg-surface">
               {[
                 { href: "/track", label: "Track your order" },
+                { href: "/policy", label: "Returns, delivery and privacy" },
                 { href: "/shop", label: "Browse all products" },
                 { href: "/cart", label: "View your cart" },
               ].map((link, index) => (

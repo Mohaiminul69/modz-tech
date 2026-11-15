@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AlertTriangle, Banknote, Loader2, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useId, useRef, useState, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { placeOrder } from "@/app/checkout/actions";
 import { signInWithGoogle } from "@/components/auth/auth-form";
@@ -29,6 +29,7 @@ import {
 } from "@/lib/checkout-schema";
 import { DISTRICTS } from "@/lib/districts";
 import { formatPrice } from "@/lib/format";
+import { trackPixel } from "@/lib/pixel";
 import type { SiteSettings } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -86,6 +87,21 @@ export const CheckoutView = ({ delivery, phone: shopPhone, user }: CheckoutViewP
   const [discountNote, setDiscountNote] = useState<string | null>(null);
   const [placing, startPlacing] = useTransition();
   const [placed, setPlaced] = useState(false);
+
+  // Facebook Pixel: "checkout started", once, when the cart has loaded with something in it.
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (checkoutTracked.current || !rows || rows.length === 0) return;
+    checkoutTracked.current = true;
+    const totals = cartTotals(rows);
+    trackPixel("InitiateCheckout", {
+      value: totals.subtotal,
+      currency: "BDT",
+      content_ids: totals.billable.map(({ line }) => line.productId),
+      content_type: "product",
+      num_items: totals.units,
+    });
+  }, [rows]);
 
   const fieldId = (field: CheckoutField) => `${id}-${field}`;
   const errorId = (field: CheckoutField) => `${id}-${field}-error`;
@@ -173,6 +189,18 @@ export const CheckoutView = ({ delivery, phone: shopPhone, user }: CheckoutViewP
     startPlacing(async () => {
       const result = await placeOrder(input);
       if (result.ok) {
+        // Order number as the event ID, so a repeat can't count the same order twice.
+        trackPixel(
+          "Purchase",
+          {
+            value: total,
+            currency: "BDT",
+            content_ids: billable.map(({ line }) => line.productId),
+            content_type: "product",
+            num_items: units,
+          },
+          result.orderNumber,
+        );
         setPlaced(true);
         clearCart();
         router.replace(`/order/${result.orderNumber}/confirmed?key=${result.accessKey}`);
@@ -503,7 +531,17 @@ export const CheckoutView = ({ delivery, phone: shopPhone, user }: CheckoutViewP
                   className="mt-0.5"
                 />
                 <label htmlFor={fieldId("terms")} className="cursor-pointer text-ink">
-                  I agree to the terms and return policy.
+                  {/* New tab, so the filled-in form isn't lost. */}
+                  I agree to the{" "}
+                  <a
+                    href="/policy#returns"
+                    target="_blank"
+                    rel="noopener"
+                    className="font-semibold text-brand-bright underline underline-offset-2"
+                  >
+                    return and delivery policy
+                  </a>
+                  .
                 </label>
               </div>
               <FieldError id={errorId("terms")} message={errors.terms} />

@@ -1,15 +1,18 @@
 # Modz Tech
 
-Mobile-first online shop for gadgets and mobile accessories in Bangladesh. Cash on delivery at launch.
+Mobile-first online shop for gadgets and mobile accessories in Bangladesh, at https://modz-tech.vercel.app.
+Customers order without an account and pay cash on delivery. Staff manage products, orders and shop settings in the admin panel at `/admin`.
 
 ## Stack
 
-- Next.js (App Router, TypeScript): server components, server actions and route handlers. No separate backend.
-- MongoDB Atlas with Mongoose (one cached connection, see `src/lib/db.ts`)
-- Better Auth: Google sign-in, phone + password, roles `customer` and `admin`
-- Cloudinary for product images
-- Tailwind CSS v4 + shadcn/ui (Radix), Lucide icons
-- Hosted on Vercel
+- **Next.js 16** (App Router, TypeScript, Cache Components): server components, server actions and route handlers. There is no separate backend.
+- **MongoDB Atlas** with Mongoose (one cached connection, `src/lib/db.ts`)
+- **Better Auth**: Google sign-in and phone + password, roles `customer` and `admin`
+- **Cloudinary** for product images (signed uploads from the admin)
+- **Tailwind CSS v4** + shadcn/ui (Radix), Lucide icons
+- **Vercel** hosting. Every push to `main` deploys.
+
+> This Next.js version differs from older guides. Read the docs in `node_modules/next/dist/docs/` before changing framework-level code (see `AGENTS.md`).
 
 ## Local setup
 
@@ -18,43 +21,117 @@ Mobile-first online shop for gadgets and mobile accessories in Bangladesh. Cash 
    ```bash
    npm install
    ```
-3. Copy `.env.example` to `.env.local` and fill in the values (see below). `MONGODB_URI` is required: the site reads products, categories and settings from MongoDB, including during `npm run build`.
-4. Seed the database (categories, brands, sample products, shop settings):
+3. Copy `.env.example` to `.env.local` and fill in the values (see [Environment variables](#environment-variables)). `MONGODB_URI` is required, also for `npm run build`, because pages read products and settings from MongoDB.
+4. Seed the database with categories, brands, sample products and shop settings:
    ```bash
    npm run seed
    ```
-5. Start the dev server:
+5. Start the dev server and open http://localhost:3000:
    ```bash
    npm run dev
    ```
-   Open http://localhost:3000.
 
-## Database
+### Scripts
 
-- Models live in `src/models` (Category, Brand, Product with variants, Settings).
-- Pages read data through cached functions in `src/lib/data` (`"use cache"` + cache tags `catalog`, `products`, `settings`). After changing data, those tags must be refreshed (the admin panel will do this); in development, restarting `npm run dev` also works.
-- `npm run seed` only creates records that are missing, so it is safe to re-run and never overwrites edits.
-- Only the Hoco EQ34 Plus price in the seed is real; the other prices are samples. Use a separate database name for development (e.g. `modz-tech-dev`) and keep sample data out of production.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Dev server with hot reload |
+| `npm run build` | Production build (needs `MONGODB_URI`) |
+| `npm run start` | Serves the production build, e.g. `npm run start -- -p 3123` |
+| `npm run lint` | ESLint |
+| `npm run seed` | Creates missing categories, brands, sample products and settings. Safe to re-run: it never overwrites edits. |
+| `npm run make-admin -- you@example.com` | Gives a user the admin role (add `--remove` to take it away) |
+
+Type check with `npx tsc --noEmit`.
+
+## Admin access
+
+1. Sign in once at `/admin/login` (Google) so the user exists.
+2. Run `npm run make-admin -- you@gmail.com`. It uses the `MONGODB_URI` in `.env.local`, so point that at the production database to make a production admin.
+3. Sign in again at `/admin`.
+
+In the admin panel:
+- **Orders:** change status (pending → confirmed → shipped → delivered, or not reachable / cancelled / returned). Customers see this on `/track`.
+- **Products, categories:** images upload to Cloudinary.
+- **Settings:** phone, email, opening hours, social links, delivery fees and times, home page banners. The contact, checkout and policy pages read these, so there is no code change needed.
+- **Messages:** contact form messages.
 
 ## Environment variables
 
+Set these in `.env.local` locally and in **Vercel → Settings → Environment Variables** for the live site. Variables starting with `NEXT_PUBLIC_` are built into the page, so changing one on Vercel needs a redeploy.
+
 | Variable | Used for |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Public site URL (canonical links, sitemap, Open Graph) |
-| `MONGODB_URI` | MongoDB Atlas connection string |
-| `BETTER_AUTH_SECRET` | Better Auth signing secret |
-| `BETTER_AUTH_URL` | Site URL Better Auth runs on |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google sign-in |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Image uploads and delivery |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Order and contact form alerts |
-| `RESEND_API_KEY`, `EMAIL_FROM` | Order confirmation and shipped emails |
-| `NEXT_PUBLIC_FB_PIXEL_ID` | Facebook Pixel |
-| `NEXT_PUBLIC_CLARITY_ID` | Microsoft Clarity |
+| `NEXT_PUBLIC_SITE_URL` | Public site address (canonical links, sitemap, share images). On Vercel it falls back to the production domain if unset. |
+| `MONGODB_URI` | MongoDB Atlas connection string. Use `modz-tech-dev` locally and `modz-tech` in production. |
+| `BETTER_AUTH_SECRET` | Signs sessions. Generate with `npx @better-auth/cli secret`. |
+| `BETTER_AUTH_URL` | Site address Better Auth runs on |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google sign-in. Redirect URI: `<site>/api/auth/callback/google` |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Product image uploads and delivery |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | New order and contact message alerts in the staff Telegram group |
+| `NEXT_PUBLIC_CLARITY_ID` | Microsoft Clarity recordings and heatmaps (production builds only) |
+| `NEXT_PUBLIC_FB_PIXEL_ID` | Facebook (Meta) Pixel (production builds only) |
+| `RESEND_API_KEY`, `EMAIL_FROM` | Reserved for order emails (not built yet) |
+
+## How things work
+
+### Data and caching
+- Models live in `src/models`: Category, Brand, Product (with variants), Order, Settings, ContactMessage, Counter (order numbers from MZ-1001), RateLimitHit.
+- Pages read data through cached functions in `src/lib/data` (`"use cache"` with cache tags `catalog`, `products`, `settings`). Admin actions refresh those tags with `updateTag`, so changes show right away. A change made directly in MongoDB shows within an hour, or after restarting `npm run dev`.
+
+### Orders
+- `src/app/checkout/actions.ts` (`placeOrder`) re-checks everything on the server: prices come from the database, stock is reserved atomically, and there are daily limits per phone number and per IP against fake orders.
+- After an order, the staff Telegram group gets an alert (`src/lib/telegram.ts`). A failed alert never fails the order. If the Telegram group is ever upgraded to a supergroup, its chat ID changes and the server log prints the new one to put in `TELEGRAM_CHAT_ID`.
+- Customers track orders on `/track` with their order number and phone number.
+
+### Cart
+- Stored in the browser (`localStorage`, `src/lib/cart`). Prices and stock always come fresh from the server.
+
+### Accounts
+- Optional for customers. Phone accounts use an internal email `01XXXXXXXXX@phone.modztech.invalid`, because Better Auth's password login is email-based. Phone numbers are not verified yet.
+
+### SEO and sharing
+- `src/app/sitemap.ts` and `src/app/robots.ts` generate `/sitemap.xml` and `/robots.txt`.
+- Product pages include structured data for Google (price, stock, photos, breadcrumbs): `src/lib/structured-data.ts`.
+- `src/app/opengraph-image.tsx` is the default share picture. Product pages use the product photo instead.
+
+### Analytics
+- Microsoft Clarity: `src/components/analytics/clarity.tsx`.
+- Facebook Pixel: `src/components/analytics/facebook-pixel.tsx` loads it. Events are sent from `src/lib/pixel.ts`: `PageView`, `AddToCart` (product page and product cards), `InitiateCheckout` (checkout page), `Purchase` (after an order, with the order number as the event ID).
+- Both only load in production builds, once their ID is set.
+
+### Policy page
+- `/policy` covers returns, warranty, delivery and privacy (`src/app/policy/page.tsx`). Delivery fees and times come from Admin → Settings. Update `LAST_UPDATED` in that file when the text changes. The old `/delivery-policy` and `/return-policy` addresses redirect there.
+
+## Project layout
+
+```
+src/
+  app/            Routes (pages, server actions, sitemap, robots, share image)
+    admin/        Admin panel (login + (panel) pages, each guarded on the server)
+  components/     UI by area (layout, shop, product, cart, checkout, admin, ui = shadcn)
+  lib/            Helpers: data access, auth, pricing, search, Telegram, Pixel
+  models/         Mongoose models
+scripts/          seed, make-admin, set-contact (one-off contact details update)
+design/           Design handoff files
+```
 
 ## Design
 
-Design handoff files live in `/design`. Brand colours, fonts, radii and shadows are tokens in `src/app/globals.css`. Components use the token utilities (`bg-brand`, `text-ink-muted`, `bg-chrome`, ...), never raw hex values.
+Design handoff files are in `/design`. Brand colours, fonts, radii and shadows are tokens in `src/app/globals.css`. Components use the token utilities (`bg-brand`, `text-ink-muted`, `bg-chrome`, ...), never raw hex values. Import `cn` from `@/lib/utils`: it knows the custom text sizes and shadows.
 
-## Still to document
+## Code conventions
 
-Creating the admin user and deploying are added as those parts are built.
+- Arrow functions for components and helpers.
+- Anything reading request data (`params`, `searchParams`, cookies) sits inside `<Suspense>`. Cache Components requires it, and the build fails otherwise.
+- Validation schemas are shared by the browser and the server (`src/lib/*-schema.ts`). Server actions never trust browser input.
+
+## Deploying
+
+1. Push to `main`. Vercel builds and deploys automatically.
+2. New environment variables: add them on Vercel, then redeploy.
+3. Google sign-in: the live site address must be in the Google Cloud Console OAuth client (authorized JavaScript origin and redirect URI).
+4. After the first deploy, submit `https://<site>/sitemap.xml` in Google Search Console.
+
+### Windows note
+If `npm run dev` fails with `EPERM` while renaming files in `.next`, Windows Defender is scanning the folder. Add the project folder as a Defender exclusion, delete `.next\dev`, and restart.

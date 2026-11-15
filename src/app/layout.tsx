@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hind_Siliguri, Saira, Sora } from "next/font/google";
 import { Clarity } from "@/components/analytics/clarity";
+import { FacebookPixel } from "@/components/analytics/facebook-pixel";
 import { Toaster } from "@/components/ui/sonner";
 import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
@@ -53,6 +54,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
       {children}
       <Toaster position="top-center" />
       <Clarity />
+      <FacebookPixel />
     </body>
   </html>
 );
