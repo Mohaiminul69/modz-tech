@@ -1,6 +1,7 @@
 import Form from "next/form";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TypingSearchInput } from "./typing-search-input";
 
 type SearchFormProps = {
   /** "compact" = mobile header field, "wide" = desktop header field with a Search button. */
@@ -24,16 +25,7 @@ export const SearchForm = ({ variant, defaultValue, className }: SearchFormProps
       )}
     >
       <Search aria-hidden="true" strokeWidth={1.5} className={wide ? "size-5" : "size-4.5"} />
-      <input
-        type="search"
-        name="q"
-        defaultValue={defaultValue}
-        placeholder="Search earbuds, chargers, watches…"
-        aria-label="Search products"
-        enterKeyHint="search"
-        autoComplete="off"
-        className="h-full min-w-0 flex-1 bg-transparent text-body text-on-chrome placeholder:text-on-chrome-muted focus-visible:outline-none"
-      />
+      <TypingSearchInput defaultValue={defaultValue} />
       {wide && (
         <button
           type="submit"

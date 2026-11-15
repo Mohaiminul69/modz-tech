@@ -218,3 +218,72 @@
     @apply font-eyebrow text-eyebrow font-semibold tracking-[0.24em] uppercase lg:text-eyebrow-lg;
   }
 }
+
+/*
+ * Toasts (Sonner). Unlayered so they win over Sonner's own runtime styles.
+ * The icon is coloured by type, then a short nudge + glow once the toast lands so it gets noticed.
+ * Each toast animates once, when it appears; older stacked toasts stay still.
+ */
+[data-sonner-toaster] [data-sonner-toast][data-styled="true"] {
+  --toast-accent: var(--brand);
+  --toast-shadow: 0 10px 30px rgb(11 15 22 / 0.16), 0 2px 6px rgb(11 15 22 / 0.08);
+  box-shadow: var(--toast-shadow);
+}
+[data-sonner-toaster] [data-sonner-toast][data-type="success"] {
+  --toast-accent: var(--success);
+}
+[data-sonner-toaster] [data-sonner-toast][data-type="error"] {
+  --toast-accent: var(--danger);
+}
+[data-sonner-toaster] [data-sonner-toast][data-type="warning"] {
+  --toast-accent: var(--offer);
+}
+[data-sonner-toaster] [data-sonner-toast] [data-icon] {
+  color: var(--toast-accent);
+}
+
+/* Starts after Sonner's slide-in (~300ms). `translate` stacks with Sonner's own `transform`. */
+[data-sonner-toaster] [data-sonner-toast][data-mounted="true"] {
+  animation:
+    mz-toast-nudge 500ms ease-in-out 300ms 1,
+    mz-toast-glow 1400ms ease-out 300ms 1;
+}
+
+@keyframes mz-toast-nudge {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  20% {
+    translate: -6px 0;
+  }
+  40% {
+    translate: 5px 0;
+  }
+  60% {
+    translate: -3px 0;
+  }
+  80% {
+    translate: 2px 0;
+  }
+}
+
+@keyframes mz-toast-glow {
+  0% {
+    box-shadow:
+      var(--toast-shadow),
+      0 0 0 0 color-mix(in srgb, var(--toast-accent) 50%, transparent);
+  }
+  100% {
+    box-shadow:
+      var(--toast-shadow),
+      0 0 0 14px color-mix(in srgb, var(--toast-accent) 0%, transparent);
+  }
+}
+
+/* "Reduce motion" on the device: keep the glow, skip the shake. */
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toaster] [data-sonner-toast][data-mounted="true"] {
+    animation: mz-toast-glow 1400ms ease-out 300ms 1;
+  }
+}
