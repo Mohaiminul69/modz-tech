@@ -130,7 +130,8 @@ const DeliveryRoute = async () => {
             </h2>
             <p className="text-ink">
               Open the parcel and check your product while the delivery person is there. If you don&apos;t like it or
-              it&apos;s faulty, give it back right away. See our{" "}
+              it&apos;s faulty, give it back right away and pay only the delivery charge.{" "}
+              <strong>Once the delivery person leaves, we can&apos;t accept a return.</strong> See our{" "}
               <Link href="/policy#returns" className="font-semibold text-brand-bright">
                 return policy
               </Link>

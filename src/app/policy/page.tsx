@@ -110,8 +110,8 @@ const PolicyRoute = async () => {
           <p className="flex items-start gap-2.5 rounded-md bg-brand-tint p-3 text-label text-ink">
             <PackageCheck aria-hidden="true" strokeWidth={1.5} className="mt-0.5 size-5 shrink-0 text-brand-bright" />
             <span>
-              <span className="font-semibold">Check your product when it arrives.</span> You pay cash on delivery, so
-              open the parcel and check it before the delivery person leaves.
+              <span className="font-semibold">Check your product before the delivery person leaves.</span> Returns are
+              only possible on the spot, not after they&apos;ve gone.
             </span>
           </p>
 
@@ -124,6 +124,13 @@ const PolicyRoute = async () => {
               <li>Check the product as soon as the delivery person hands it to you.</li>
               <li>If you don&apos;t want to keep it, give it back to the delivery person straight away.</li>
               <li>Please return it complete: with the box, accessories and anything else that came with it.</li>
+              <li>
+                If you return it, you still <strong>pay the delivery charge</strong>. You don&apos;t pay for the product.
+              </li>
+              <li>
+                <strong>Returns are only accepted while the delivery person is there.</strong> Once they leave, we
+                can&apos;t accept a return, even if you find a fault later.
+              </li>
             </ul>
             <p>Questions about a return? Please {contact}.</p>
           </Section>
@@ -133,8 +140,8 @@ const PolicyRoute = async () => {
               Our products <strong>don&apos;t come with a warranty</strong> at the moment.
             </p>
             <p>
-              That&apos;s why it matters to check your product when it arrives: if it&apos;s faulty, return it right
-              away (see{" "}
+              That&apos;s why it matters to check your product while the delivery person is there: if it&apos;s
+              faulty, return it right away (see{" "}
               <a href="#returns" className="font-semibold text-brand-bright">
                 Returns
               </a>
