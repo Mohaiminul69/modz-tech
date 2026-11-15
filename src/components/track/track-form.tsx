@@ -46,13 +46,14 @@ type Step = { title: string; detail: string; state: "done" | "now" | "todo" };
  * Timeline (as in the mockup): done = green ✓, now = blue dot, todo = hollow.
  *   pending   → placed ✓, confirm (now), shipped, delivered
  *   confirmed → placed ✓, confirmed ✓, shipped (now: packing), delivered
- *   shipped   → placed ✓, confirmed ✓, shipped (now: with courier), delivered
+ *   shipped   → placed ✓, confirmed ✓, shipped ✓, delivered (now: on the way)
  *   delivered → all ✓
  */
 const timeline = (order: TrackedOrder): Step[] => {
   const courier = order.courier.name ?? "the courier";
   const confirmed = order.status !== "pending";
   const delivered = order.status === "delivered";
+  const shipped = order.status === "shipped" || delivered;
 
   return [
     { title: "Order placed", detail: when(order.placedAt), state: "done" },
@@ -66,19 +67,23 @@ const timeline = (order: TrackedOrder): Step[] => {
       title: "Shipped",
       detail: order.reachedAt.shipped
         ? `With ${courier} · ${when(order.reachedAt.shipped)}`
-        : delivered
+        : shipped
           ? order.courier.name
             ? `With ${courier}`
             : "Shipped"
           : confirmed
             ? "We're packing your order"
             : "After we confirm",
-      state: delivered ? "done" : confirmed ? "now" : "todo",
+      state: shipped ? "done" : confirmed ? "now" : "todo",
     },
     {
       title: "Delivered",
-      detail: order.reachedAt.delivered ? when(order.reachedAt.delivered) : "Pay cash when it arrives",
-      state: delivered ? "done" : "todo",
+      detail: order.reachedAt.delivered
+        ? when(order.reachedAt.delivered)
+        : shipped
+          ? "On the way · pay cash when it arrives"
+          : "Pay cash when it arrives",
+      state: delivered ? "done" : shipped ? "now" : "todo",
     },
   ];
 };
