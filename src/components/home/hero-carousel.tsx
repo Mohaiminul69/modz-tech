@@ -8,16 +8,28 @@ type HeroCarouselProps = {
   children: React.ReactNode;
 };
 
+// How long each slide stays before moving on by itself.
+const AUTOPLAY_MS = 5000;
+
 /*
- * Swipeable track (CSS scroll-snap) with dot buttons. No autoplay.
+ * Swipeable track (CSS scroll-snap) with dot buttons.
  * Slides are server-rendered and passed in as children; this only tracks
  * which one is showing.
+ *
+ * Autoplay: moves to the next slide every AUTOPLAY_MS. Any change of slide
+ * (swipe, dot, or autoplay) restarts the timer, so a manual swipe always gets
+ * the full time. Paused while the pointer is over it, a finger is on it, it
+ * has keyboard focus, or the tab is hidden; off for reduced motion.
  */
 export const HeroCarousel = ({ label, children }: HeroCarouselProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const [touching, setTouching] = useState(false);
+  const [focused, setFocused] = useState(false);
   const slides = Children.toArray(children);
   const count = slides.length;
+  const paused = hovered || touching || focused;
 
   useEffect(() => {
     const track = trackRef.current;
@@ -45,8 +57,45 @@ export const HeroCarousel = ({ label, children }: HeroCarouselProps) => {
     track.scrollTo({ left: index * track.clientWidth, behavior: reduceMotion ? "auto" : "smooth" });
   };
 
+  // Bumped when the tab becomes visible again, to restart the countdown.
+  const [visibleTick, setVisibleTick] = useState(0);
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!document.hidden) setVisibleTick((tick) => tick + 1);
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (count < 2 || paused) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = window.setTimeout(() => {
+      if (document.hidden) return;
+      const track = trackRef.current;
+      if (!track) return;
+      track.scrollTo({ left: ((active + 1) % count) * track.clientWidth, behavior: "smooth" });
+    }, AUTOPLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [active, count, paused, visibleTick]);
+
   return (
-    <div role="region" aria-roledescription="carousel" aria-label={label} className="relative">
+    <div
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={label}
+      className="relative"
+      onPointerEnter={(event) => event.pointerType === "mouse" && setHovered(true)}
+      onPointerLeave={(event) => event.pointerType === "mouse" && setHovered(false)}
+      onTouchStart={() => setTouching(true)}
+      onTouchEnd={() => setTouching(false)}
+      onTouchCancel={() => setTouching(false)}
+      onFocus={(event) => event.target.matches(":focus-visible") && setFocused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+      }}
+    >
       <div
         ref={trackRef}
         className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
