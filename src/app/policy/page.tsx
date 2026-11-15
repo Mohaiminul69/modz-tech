@@ -164,7 +164,11 @@ const PolicyRoute = async () => {
               )}
             </ul>
             <p>
-              You can see where your order is on the{" "}
+              More details on the{" "}
+              <Link href="/delivery" className="font-semibold text-brand-bright">
+                Delivery
+              </Link>{" "}
+              page. You can see where your order is on the{" "}
               <Link href="/track" className="font-semibold text-brand-bright">
                 Track order
               </Link>{" "}

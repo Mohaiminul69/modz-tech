@@ -25,9 +25,9 @@ type VariantProps = {
   settings: Pick<SiteSettings, "phone" | "facebookUrl" | "facebookLabel">;
 };
 
-// Sections of the one policy page (/policy).
+// The delivery page, and sections of the policy page.
 const policyLinks = [
-  { href: "/policy#delivery", label: "Delivery policy" },
+  { href: "/delivery", label: "Delivery" },
   { href: "/policy#returns", label: "Return policy" },
   { href: "/policy#privacy", label: "Privacy policy" },
 ];

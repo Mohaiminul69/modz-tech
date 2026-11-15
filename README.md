@@ -96,12 +96,15 @@ Set these in `.env.local` locally and in **Vercel → Settings → Environment V
 - `src/app/opengraph-image.tsx` is the default share picture. Product pages use the product photo instead.
 
 ### Analytics
-- Microsoft Clarity: `src/components/analytics/clarity.tsx`.
+- Microsoft Clarity: `src/components/analytics/clarity.tsx` and `clarity-loader.tsx`. It is not loaded on localhost (even for a production build), on admin pages, or for signed-in admins anywhere on the site.
 - Facebook Pixel: `src/components/analytics/facebook-pixel.tsx` loads it. Events are sent from `src/lib/pixel.ts`: `PageView`, `AddToCart` (product page and product cards), `InitiateCheckout` (checkout page), `Purchase` (after an order, with the order number as the event ID).
 - Both only load in production builds, once their ID is set.
 
-### Policy page
-- `/policy` covers returns, warranty, delivery and privacy (`src/app/policy/page.tsx`). Delivery fees and times come from Admin → Settings. Update `LAST_UPDATED` in that file when the text changes. The old `/delivery-policy` and `/return-policy` addresses redirect there.
+### Delivery and policy pages
+- `/delivery` (`src/app/delivery/page.tsx`): delivery charges and times, how delivery works, checking the parcel before paying.
+- `/policy` (`src/app/policy/page.tsx`): returns, warranty, a short delivery summary and privacy. Update `LAST_UPDATED` in that file when the text changes.
+- Both read delivery fees, times and the phone number from Admin → Settings.
+- The old `/delivery-policy` address redirects to `/delivery`, and `/return-policy` to `/policy#returns`.
 
 ## Project layout
 

@@ -157,7 +157,8 @@ const ContactRoute = async () => {
             <nav aria-labelledby="help-title" className="overflow-hidden rounded-lg border border-border bg-surface">
               {[
                 { href: "/track", label: "Track your order" },
-                { href: "/policy", label: "Returns, delivery and privacy" },
+                { href: "/delivery", label: "Delivery charges and times" },
+                { href: "/policy", label: "Returns and privacy" },
                 { href: "/shop", label: "Browse all products" },
                 { href: "/cart", label: "View your cart" },
               ].map((link, index) => (
