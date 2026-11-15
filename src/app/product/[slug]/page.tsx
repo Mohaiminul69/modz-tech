@@ -11,6 +11,7 @@ import { getProduct, getProductSlugs, getSimilarProducts } from "@/lib/data/prod
 import { getSettings } from "@/lib/data/settings";
 import { formatPrice } from "@/lib/format";
 import { cardPricing } from "@/lib/pricing";
+import { breadcrumbJsonLd, jsonLdScript, productJsonLd } from "@/lib/structured-data";
 
 // Prerender every product at build time (Cache Components needs at least one).
 export const generateStaticParams = async () => {
@@ -29,7 +30,10 @@ export const generateMetadata = async ({ params }: PageProps<"/product/[slug]">)
     title: `${product.name} price in Bangladesh`,
     description: `${product.name} at ${formatPrice(price)}. ${product.shortSpec ? `${product.shortSpec}. ` : ""}100% authentic, cash on delivery all over Bangladesh.`,
     alternates: { canonical: `/product/${product.slug}` },
-    openGraph: image ? { images: [{ url: image.src, alt: image.alt }] } : undefined,
+    // A page's openGraph replaces the layout's, so the site name is repeated here.
+    openGraph: image
+      ? { siteName: "Modz Tech", type: "website", locale: "en_BD", images: [{ url: image.src, alt: image.alt }] }
+      : undefined,
   };
 };
 
@@ -54,6 +58,18 @@ const ProductContent = async ({ params }: { params: PageProps<"/product/[slug]">
 
   return (
     <>
+      {/* For Google: price, stock and photo in search results, plus the breadcrumb trail. */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(productJsonLd(product))} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: product.category.name, path: categoryHref },
+            { name: product.name, path: `/product/${product.slug}` },
+          ]),
+        )}
+      />
       <SiteHeader leading="back" backHref={categoryHref} actions={["search", "cart"]} activeCategory={product.category.slug} />
       <main className="flex flex-1 flex-col">
         <div className="mx-auto flex w-full max-w-content flex-col lg:gap-5 lg:px-4 lg:pt-5 xl:px-0">

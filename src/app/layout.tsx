@@ -35,6 +35,9 @@ export const metadata: Metadata = {
   },
   description:
     "Authentic earbuds, speakers, smart watches, chargers and more. Cash on delivery all over Bangladesh.",
+  // Share previews: site name on the card, and a large picture instead of a small thumbnail.
+  openGraph: { siteName: "Modz Tech", type: "website", locale: "en_BD" },
+  twitter: { card: "summary_large_image" },
 };
 
 // suppressHydrationWarning: browser extensions (Grammarly, ColorZilla, ...) add attributes to
