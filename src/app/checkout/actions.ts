@@ -3,6 +3,7 @@
 import { randomBytes } from "node:crypto";
 import { updateTag } from "next/cache";
 import { headers } from "next/headers";
+import { after } from "next/server";
 import { auth } from "@/lib/auth";
 import { saveDeliveryDetails } from "@/lib/account";
 import { isPhoneEmail } from "@/lib/phone-account";
@@ -11,6 +12,7 @@ import { connectDB } from "@/lib/db";
 import { PRODUCTS_TAG } from "@/lib/data/products";
 import { getSettings } from "@/lib/data/settings";
 import { effectivePrice } from "@/lib/pricing";
+import { orderAlertText, sendTelegramAlert } from "@/lib/telegram";
 import { nextSequence } from "@/models/counter";
 import { Order, type OrderItem } from "@/models/order";
 import { Product } from "@/models/product";
@@ -135,16 +137,20 @@ export const placeOrder = async (input: unknown): Promise<PlaceOrderResult> => {
     const accessKey = randomBytes(16).toString("hex");
     const now = new Date();
 
+    const customer = { name: data.name, phone: data.phone, email: data.email };
+    const delivery = { area: data.area, district: data.district, address: data.address, note: data.note };
+    const total = subtotal + (deliveryFee ?? 0);
+
     await Order.create({
       orderNumber,
       accessKey,
       userId: session?.user.id,
-      customer: { name: data.name, phone: data.phone, email: data.email },
-      delivery: { area: data.area, district: data.district, address: data.address, note: data.note },
+      customer,
+      delivery,
       items,
       subtotal,
       deliveryFee,
-      total: subtotal + (deliveryFee ?? 0),
+      total,
       paymentMethod: "cod",
       status: "pending",
       statusHistory: [{ status: "pending", at: now }],
@@ -165,7 +171,11 @@ export const placeOrder = async (input: unknown): Promise<PlaceOrderResult> => {
       }).catch((error) => console.error("saving delivery details failed", error));
     }
 
-    // TODO(integrations stage): Telegram alert to the admin, confirmation email when `email` is set.
+    // Staff alert in Telegram, sent after the shopper already has their confirmation.
+    after(() =>
+      sendTelegramAlert(orderAlertText({ orderNumber, customer, delivery, items, subtotal, deliveryFee, total })),
+    );
+    // TODO(integrations stage): confirmation email when `email` is set.
 
     return { ok: true, orderNumber, accessKey };
   } catch (error) {

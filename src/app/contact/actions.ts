@@ -1,8 +1,10 @@
 "use server";
 
 import { headers } from "next/headers";
+import { after } from "next/server";
 import { type ContactErrors, contactSchema, toContactErrors } from "@/lib/contact-schema";
 import { connectDB } from "@/lib/db";
+import { contactAlertText, sendTelegramAlert } from "@/lib/telegram";
 import { ContactMessage } from "@/models/contact-message";
 
 // Spam protection: daily caps per phone number and per device/IP.
@@ -47,6 +49,7 @@ export const sendContactMessage = async (input: unknown): Promise<ContactResult>
     return { ok: false, message: "Something went wrong sending your message. Please try again or call us." };
   }
 
-  // TODO(integrations stage): forward the message to Telegram.
+  // Staff alert in Telegram, sent after the visitor already sees "Message sent".
+  after(() => sendTelegramAlert(contactAlertText(parsed.data)));
   return { ok: true };
 };

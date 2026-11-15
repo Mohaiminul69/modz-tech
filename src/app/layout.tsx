@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hind_Siliguri, Saira, Sora } from "next/font/google";
 import { Clarity } from "@/components/analytics/clarity";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 const sora = Sora({
@@ -27,7 +28,7 @@ const saira = Saira({
 
 export const metadata: Metadata = {
   // Base for canonical URLs and Open Graph images (Facebook shares).
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Modz Tech | Gadgets and mobile accessories in Bangladesh",
     template: "%s | Modz Tech",
